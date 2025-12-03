@@ -1,0 +1,97 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>المتجر | Omar Sat</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;700;900&display=swap" rel="stylesheet">
+</head>
+<body class="store-body">
+
+    <div class="top-bar-mhd">
+        <div class="ticker-wrap">
+            <div class="ticker">
+                <div class="ticker-item"><i class="fa fa-truck"></i> شحن لجميع المحافظات 🚛</div>
+                <div class="ticker-item"><i class="fa fa-headset"></i> دعم فني 24 ساعة 🎧</div>
+                <div class="ticker-item"><i class="fa fa-tag"></i> عروض حصرية 💸</div>
+            </div>
+        </div>
+    </div>
+
+    <nav class="navbar">
+        <div class="logo">
+            <a href="{% url 'home' %}">omar sat.<span class="neon-text">Store</span></a>
+        </div>
+        
+        <ul class="nav-links">
+            <li><a href="{% url 'home' %}">الرئيسية</a></li>
+            <li><a href="{% url 'store' %}" class="active">المتجر</a></li>
+            <li><a href="{% url 'server' %}">السيرفر</a></li>
+        </ul>
+
+        <div class="nav-icons">
+             <div class="search-bar-styled">
+                <form action="{% url 'search' %}" method="GET">
+                    <input type="text" name="q" placeholder="ابحث عن منتج..." value="{{ request.GET.q }}">
+                    <button type="submit"><i class="fa fa-search"></i></button>
+                </form>
+            </div>
+            {% if user.is_authenticated %}
+                <span style="color: white; font-size: 0.9rem; margin-left: 5px;">{{ user.username }}</span>
+                
+            {% else %}
+                <a href="{% url 'login' %}" class="btn-login">دخول</a>
+                <a href="{% url 'profile' %}" style="color: white; margin: 0 10px;">حسابى</a>
+                     
+            {% endif %}
+            
+            <a href="{% url 'cart' %}" class="cart-icon"><i class="fa fa-shopping-cart"></i></a>
+        </div>
+    </nav>
+
+    <div class="page-header" style="margin-top: 60px;">
+        <h1>أحدث <span class="neon-text">المنتجات</span></h1>
+        <p>تكنولوجيا المستقبل بين يديك</p>
+    
+           
+
+    <div class="products-container">
+        {% for product in products %}
+        <div class="product-card">
+            <div class="card-img">
+                <a href="{% url 'product_details' product.id %}">
+                    {% if product.image %}
+                        <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                    {% else %}
+                        <img src="{% static 'images/no-image.png' %}" alt="No Image">
+                    {% endif %}
+                </a>
+            </div>
+            <div class="card-info">
+                <h3>{{ product.name }}</h3>
+                <span class="price">{{ product.price }} ج.م</span>
+                <a href="{% url 'add_to_cart' product.id %}" class="add-btn">أضف للسلة 🛒</a>
+            </div>
+        </div>
+        {% empty %}
+            <h3 style="color: #777; text-align: center; width: 100%;">لا توجد منتجات حالياً</h3>
+        {% endfor %}
+    </div>
+
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+          new google.translate.TranslateElement({pageLanguage: 'ar', includedLanguages: 'ar,en,tr,es,fr,de,ru,it', layout: google.translate.TranslateElement.InlineLayout.SIMPLE}, 'google_translate_element');
+        }
+    </script>
+    <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    <script src="{% static 'js/script.js' %}"></script>
+<script>
+        function toggleFloatMenu() {
+            document.getElementById('floatMenu').classList.toggle('active');
+        }
+    </script>
+</body>
+</html>

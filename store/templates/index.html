@@ -1,0 +1,290 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الرئيسية | Omar Sat</title>
+    
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;700;900&display=swap" rel="stylesheet">
+</head>
+<body class="home-body">
+
+    <div class="top-bar">
+        <div class="ticker-wrap">
+            <div class="ticker">
+                <div class="ticker-item"><i class="fa fa-truck"></i> شحن سريع لجميع المحافظات</div>
+                <div class="ticker-item"><i class="fa fa-headset"></i> دعم فني متواصل 24 ساعة</div>
+                <div class="ticker-item"><i class="fa fa-tag"></i> عروض حصرية وخصومات</div>
+            </div>
+        </div>
+    </div>
+
+    <header class="main-header">
+        <div class="container header-flex">
+            
+            <div class="logo-area">
+                <a href="{% url 'home' %}">
+                    <h1>Omar<span class="neon-text">Sat</span></h1>
+                </a>
+            </div>
+
+            <div class="search-box">
+                <form action="{% url 'search' %}" method="GET">
+                    <input type="text" name="q" placeholder="ابحث عن منتج...">
+                    <button type="submit"><i class="fa fa-search"></i></button>
+                </form>
+            </div>
+
+           <div class="nav-actions">
+    <div id="google_translate_element" class="lang-widget"></div>
+
+    {% if user.is_authenticated %}
+        <a href="{% url 'profile' %}" class="user-link">أهلاً, {{ user.username }}</a>
+        
+        <a href="{% url 'logout' %}" class="btn-logout" title="تسجيل الخروج">
+            <i class="fa fa-sign-out"></i>
+        </a>
+    {% else %}
+        <a href="{% url 'login' %}" class="btn-login">دخول</a>
+    {% endif %}
+    
+    <a href="{% url 'cart' %}" class="cart-btn">
+        <i class="fa fa-shopping-cart"></i>
+        <span class="badge">0</span>
+    </a>
+</div>
+        </div>
+    </header>
+
+    <nav class="main-nav">
+    <div class="container nav-flex">
+        
+        
+
+        <ul class="nav-list" id="main-nav-links">
+            <li><a href="{% url 'home' %}" class="active">الرئيسية</a></li>
+            <li><a href="{% url 'store' %}">المتجر</a></li>
+            <li><a href="{% url 'server' %}">السيرفرات</a></li>
+            <li><a href="#about-section">من نحن</a></li>
+            <li><a href="#contact-section">تواصل معنا</a></li>
+        </ul>
+        
+    </div>
+</nav>
+
+    <main class="split-screen-container">
+        
+        <div class="split left server-side">
+            <div class="content">
+                <h2 class="typing-effect" data-text="server Eagle" >سيرفر ايجل</h2>
+                <p>سرعة خيالية، ثبات تام، وكل قنوات العالم</p>
+                <a href="{% url 'server' %}" class="btn-cta server-btn">اشترك الآن</a>
+            </div>
+            <div class="overlay"></div>
+        </div>
+
+        <div class="split right store-side">
+            <div class="content">
+                <h2 class="typing-effect" data-text="متجر عمر سات">متجر عمر سات</h2>
+                <p>أحدث الرسيفرات، العدسات، ومستلزمات الدش</p>
+                <a href="{% url 'store' %}" class="btn-cta store-btn">تصفح المنتجات</a>
+            </div>
+            <div class="overlay"></div>
+        </div>
+
+    </main>
+
+    <div class="floating-menu" id="floatMenu">
+    
+    <a href="tel:01011058982" class="float-item phone">
+        <span class="tooltip">اتصال</span> <i class="fa-solid fa-phone"></i>
+    </a>
+
+    <a href="https://wa.me/+201011058982" target="_blank" class="float-item whatsapp">
+        <span class="tooltip">واتساب</span>
+        <i class="fa-brands fa-whatsapp"></i>
+    </a>
+
+    <a href="https://t.me/+201011058982" target="_blank" class="float-item telegram">
+        <span class="tooltip">تليجرام</span>
+        <i class="fa-brands fa-telegram"></i>
+    </a>
+
+    <button class="main-float-btn" onclick="toggleFloatMenu()">
+        <i class="fa-solid fa-headset icon-open"></i>
+        <i class="fa-solid fa-times icon-close"></i>
+    </button>
+</div>
+
+    <section id="about-section" class="about-pro">
+    <div class="container">
+        <div class="about-grid">
+            
+            <div class="about-info">
+                <h4 class="sub-title">من نكون؟</h4>
+                <h2 class="main-title">Omar <span class="neon-text">Sat</span> Technology</h2>
+                <p class="description">
+                    نحن ليس مجرد متجر، بل نحن شريكك الأول في عالم التكنولوجيا الرقمية والستالايت. 
+                    بدأنا منذ سنوات بهدف واحد: تقديم <span class="highlight">أعلى جودة</span> 
+                    بأفضل سعر، مع دعم فني لا يتوقف.
+                </p>
+                
+                <div class="features-list">
+                    <div class="feature-item">
+                        <i class="fa-solid fa-medal"></i>
+                        <div>
+                            <h5>منتجات أصلية</h5>
+                            <small>ضمان حقيقي 100%</small>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fa-solid fa-headset"></i>
+                        <div>
+                            <h5>دعم فني</h5>
+                            <small>معاك 24 ساعة</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stats-box">
+                    <div class="stat">
+                        <h3 class="neon-num">+10</h3>
+                        <span>سنين خبرة</span>
+                    </div>
+                    <div class="stat">
+                        <h3 class="neon-num">+5K</h3>
+                        <span>عميل سعيد</span>
+                    </div>
+                    <div class="stat">
+                        <h3 class="neon-num">+50</h3>
+                        <span>منتج وسيرفر</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="about-visual">
+                <div class="image-wrapper">
+                    <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=1000" alt="About Omar Sat">
+                    <div class="floating-badge">
+                        <i class="fa-solid fa-rocket"></i>
+                        <span>الأسرع في مصر</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<section id="contact-section" class="contact-pro">
+    <div class="container">
+        
+        <div class="section-header text-center">
+            <h2 class="section-title">تواصل <span class="neon-text">معنا</span></h2>
+            <p class="section-desc">نحن هنا لمساعدتك، لا تتردد في الاتصال بنا في أي وقت.</p>
+        </div>
+
+        <div class="contact-grid">
+            
+            <a href="https://wa.me/+201011058982" target="_blank" class="contact-card whatsapp-card">
+                <div class="icon-box">
+                    <i class="fa-brands fa-whatsapp"></i>
+                </div>
+                <h3>واتساب</h3>
+                <p>تواصل معنا فوراً</p>
+                <span class="action-text">اضغط للمحادثة</span>
+            </a>
+
+            <a href="tel:+201011058982" class="contact-card phone-card">
+                <div class="icon-box">
+                    <i class="fa-solid fa-phone-volume"></i>
+                </div>
+                <h3>اتصل بنا</h3>
+                <p>01011058982</p>
+                <span class="action-text">اضغط للاتصال</span>
+            </a>
+
+            <div class="contact-card location-card">
+                <div class="icon-box">
+                    <i class="fa-solid fa-location-dot"></i>
+                </div>
+                <h3>زيارتنا</h3>
+                <p>المحلة الكبرى، الغربية</p>
+                <span class="action-text">شرفنا في الفرع</span>
+            </div>
+
+            <div class="contact-card time-card">
+                <div class="icon-box">
+                    <i class="fa-solid fa-clock"></i>
+                </div>
+                <h3>مواعيد العمل</h3>
+                <p>يومياً من 10 ص - 10 م</p>
+                <span class="action-text">متاحين لخدمتك</span>
+            </div>
+
+        </div>
+
+        
+</section>
+<footer class="final-footer">
+    <div class="container">
+        
+        <div class="footer-top">
+            <div class="brand-box">
+                <h2>Omar<span class="neon-text">Sat</span></h2>
+                <p>تابعنا ليصلك كل جديد في عالم السيرفرات</p>
+            </div>
+
+            <div class="social-box">
+                <a href="https://www.facebook.com/share/g/1DEB7VPSfY/" target="_blank" class="social-btn fb">
+                    <i class="fa-brands fa-facebook-f"></i>
+                </a>
+                <a href="https://chat.whatsapp.com/ETRXjUTsm8Y6xhCNc4t" target="_blank" class="social-btn wa">
+                    <i class="fa-brands fa-whatsapp"></i>
+                </a>
+                <a href="https://t.me/eagle_sharing" target="_blank" class="social-btn tg">
+                    <i class="fa-brands fa-telegram"></i>
+                </a>
+            </div>
+        </div>
+
+        <hr class="footer-line">
+
+        <div class="footer-bottom">
+            <p class="copyright">
+                جميع الحقوق محفوظة &copy; 2025 لـ <b>Omar Sat</b>
+            </p>
+            
+            <p class="developer">
+                صمم وطور بواسطة <span class="mhd-sign">MHD Company</span> 🚀
+            </p>
+        </div>
+
+    </div>
+</footer>
+
+    <script src="{% static 'js/script.js' %}"></script>
+    
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+          new google.translate.TranslateElement({
+              pageLanguage: 'ar', 
+              includedLanguages: 'ar,en,tr,es,fr,de,ru,it', 
+              layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+          }, 'google_translate_element');
+        }
+    </script>
+    <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+<script>
+        function toggleFloatMenu() {
+            document.getElementById('floatMenu').classList.toggle('active');
+        }
+    </script>
+    
+</body>
+</html>

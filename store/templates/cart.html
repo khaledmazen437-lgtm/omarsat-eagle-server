@@ -1,0 +1,125 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>سلة الشراء | Omar Sat</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;700;900&display=swap" rel="stylesheet">
+</head>
+<body class="cart-body">
+
+    <nav class="navbar">
+        <div class="logo">
+            <a href="{% url 'home' %}" style="text-decoration: none; color: white;">
+                Omarsat.<span class="neon-text">Store</span>
+            </a>
+        </div>
+        <ul class="nav-links">
+            <li><a href="{% url 'home' %}">الرئيسية</a></li>
+            <li><a href="{% url 'store' %}">المتجر</a></li>
+            <li><a href="{% url 'server' %}">السيرفر</a></li>
+        </ul>
+        <div class="nav-icons">
+            {% if user.is_authenticated %}
+                <a href="{% url 'profile' %}" class="user-link">أهلاً, {{ user.username }}</a>
+            {% else %}
+                <a href="{% url 'login' %}" class="btn-login">تسجيل الدخول</a>
+            {% endif %}
+            <a href="{% url 'cart' %}" class="cart-icon">🛒 <span class="cart-count">0</span></a>
+        </div>
+    </nav>
+
+    <div class="page-header">
+        <h1>سلة <span class="neon-text">مشترياتك</span></h1>
+    </div>
+
+    <div class="container cart-container">
+        
+        <div class="cart-items">
+            <table>
+                <thead>
+                    <tr>
+                        <th>المنتج</th>
+                        <th>السعر</th>
+                        <th>الكمية</th>
+                        <th>الإجمالي</th>
+                        <th>حذف</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if not cart_items %}
+                    <tr>
+                        <td colspan="5" style="text-align: center; padding: 30px; color: #888;">
+                            <h3>السلة فارغة يا صديقي 🛒</h3>
+                            <a href="{% url 'store' %}" style="color: var(--neon-blue);">تصفح المنتجات الأن</a>
+                        </td>
+                    </tr>
+                    {% endif %}
+
+                    {% for item in cart_items %}
+                    <tr>
+                        <td class="product-info">
+                                                        {% if item.product.image %}
+                                <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}">
+                            {% else %}
+                                <img src="{% static 'images/no-image.png' %}" alt="No Image">
+                            {% endif %}
+                            
+                            <div>
+                                <p>{{ item.product.name }}</p>
+                                <small>القسم: {{ item.product.get_category_display }}</small>
+                            </div>
+                        </td>
+                        
+                        <td>{{ item.product.price }} ج.م</td>
+                        
+                        <td class="quantity-cell">
+                            <div class="quantity-control d-flex align-items-center">
+                                <a href="{% url 'decrease_quantity' product_id=item.product.id %}" class="btn-qty btn-minus">-</a>
+                                <span class="item-quantity mx-2">{{ item.quantity }}</span>
+                                <a href="{% url 'increase_quantity' product_id=item.product.id %}" class="btn-qty btn-plus">+</a>
+                            </div>
+                        </td>
+                        
+                        <td class="item-total">{{ item.sub_total|floatformat:2 }} ج.م</td>
+                        
+                        <td>
+                                                        <a href="{% url 'remove_from_cart' product_id=item.product.id %}" class="remove-btn">
+                                ❌
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+                <div class="cart-summary">
+            <h3>ملخص الطلب 🧾</h3>
+            <div class="summary-row">
+                <span>المجموع الفرعي</span>
+                <span>{{ subtotal|floatformat:2 }} ج.م</span> 
+            </div>
+            <div class="summary-row">
+                <span>الشحن</span>
+                <span>{{ shipping_fee|floatformat:2 }} ج.م</span>
+            </div>
+            <hr>
+            <div class="summary-row total">
+                <span>الإجمالي</span>
+                <span class="neon-text">{{ grand_total|floatformat:2 }} ج.م</span>
+            </div>
+            
+            <a href="{% url 'checkout' %}" class="checkout-btn">
+ إتمام الشراء والدفع 
+ </a>
+        </div>
+
+    </div>
+
+    <script src="{% static 'js/script.js' %}"></script>
+</body>
+</html>

@@ -1,0 +1,187 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تفاصيل المنتج | Omar Sat</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;700;900&display=swap" rel="stylesheet">
+</head>
+<body class="details-body">
+
+    <nav class="navbar">
+        <div class="logo">
+            <a href="{% url 'home' %}" style="text-decoration: none; color: white;">
+                Omarsat.<span class="neon-text">Store</span>
+            </a>
+        </div>
+        <ul class="nav-links">
+            <li><a href="{% url 'home' %}">الرئيسية</a></li>
+            <li><a href="{% url 'store' %}" class="active">المتجر</a></li>
+            <li><a href="{% url 'server' %}">السيرفر</a></li>
+        </ul>
+        <div class="nav-icons">
+            <a href="{% url 'login' %}" class="btn-login">تسجيل الدخول</a>
+            <a href="{% url 'cart' %}" class="cart-icon">🛒 <span class="cart-count">0</span></a>
+        </div>
+    </nav>
+
+    <div class="details-container"></div>
+        
+        <div class="breadcrumb">
+            <a href="{% url 'store' %}">المتجر</a> > <span>{{ product.name }}</span>
+        </div>
+
+        <div class="product-wrapper">
+            <div class="product-text">
+                <h1 class="p-title">{{ product.name }}</h1>
+                <div class="p-category">القسم: {{ product.get_category_display }}</div>
+                
+                <div class="p-price">{{ product.price }} ج.م</div>
+                
+                <p class="p-desc">
+                    {{ product.description|linebreaks }}
+                </p>
+
+                <div class="action-box">
+                    <input type="number" value="1" min="1" class="qty-input">
+                    <a href="{% url 'add_to_cart' product.id %}" class="add-btn-large" style="text-decoration: none; text-align: center;">
+                        أضف للسلة 🛒
+                    </a>
+                </div>
+            </div>
+
+            <div class="product-visual">
+                <div class="img-frame">
+                    {% if product.image %}
+                        <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                    {% else %}
+                        <img src="{% static 'images/no-image.png' %}" alt="No Image">
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        {% if product.processor or product.ram %}
+        <div class="specs-container">
+            <h2 class="section-title">المواصفات <span class="neon-text">الفنية</span></h2>
+            
+            <div class="specs-grid">
+                <div class="specs-table-box">
+                    <table class="specs-table">
+                        {% if product.processor %}
+                        <tr>
+                            <th>المعالج</th>
+                            <td>{{ product.processor }}</td>
+                        </tr>
+                        {% endif %}
+                        
+                        {% if product.ram %}
+                        <tr>
+                            <th>الرامات</th>
+                            <td>{{ product.ram }}</td>
+                        </tr>
+                        {% endif %}
+
+                        {% if product.storage %}
+                        <tr>
+                            <th>الذاكرة</th>
+                            <td>{{ product.storage }}</td>
+                        </tr>
+                        {% endif %}
+
+                        {% if product.tuner_type %}
+                        <tr>
+                            <th>نوع التيونر</th>
+                            <td>{{ product.tuner_type }}</td>
+                        </tr>
+                        {% endif %}
+
+                        <tr>
+                            <th>الواي فاي</th>
+                            <td>{% if product.wifi_support %}✅ داخلي{% else %}❌ خارجي (يحتاج أنتينا){% endif %}</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="specs-image">
+                    {% if product.image %}
+                        <img src="{{ product.image.url }}" alt="Device Look">
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="reviews-container">
+            <h2 class="section-title">تقييمات <span class="neon-text">العملاء</span></h2>
+            
+            <div class="reviews-list">
+                {% if product.reviews.all %}
+                    {% for review in product.reviews.all %}
+                    <div class="review-card">
+                        <div class="review-header">
+                            <strong>{{ review.user.username }}</strong>
+                            <div class="stars" style="color: gold;">
+                                {% if review.rating == 5 %}⭐⭐⭐⭐⭐
+                                {% elif review.rating == 4 %}⭐⭐⭐⭐
+                                {% elif review.rating == 3 %}⭐⭐⭐
+                                {% elif review.rating == 2 %}⭐⭐
+                                {% else %}⭐{% endif %}
+                            </div>
+                        </div>
+                        <p class="review-date">{{ review.created_at|date:"d M Y" }}</p>
+                        <p class="review-text">{{ review.comment }}</p>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p style="color: #777; text-align: center;">كن أول من يقيم هذا المنتج! ⭐</p>
+                {% endif %}
+            </div>
+
+            <div class="add-review-box">
+                {% if user.is_authenticated %}
+                    <h3>أضف تقييمك يا {{ user.username }}</h3>
+                    
+                    <form action="{% url 'add_review' product.id %}" method="POST">
+                        {% csrf_token %}
+                        
+                        <div class="rating-css">
+                            <div class="star-icon">
+                                <input type="radio" name="rating" id="rating5" value="5">
+                                <label for="rating5" class="fa fa-star">★</label>
+                                
+                                <input type="radio" name="rating" id="rating4" value="4">
+                                <label for="rating4" class="fa fa-star">★</label>
+                                
+                                <input type="radio" name="rating" id="rating3" value="3">
+                                <label for="rating3" class="fa fa-star">★</label>
+                                
+                                <input type="radio" name="rating" id="rating2" value="2">
+                                <label for="rating2" class="fa fa-star">★</label>
+                                
+                                <input type="radio" name="rating" id="rating1" value="1">
+                                <label for="rating1" class="fa fa-star">★</label>
+                            </div>
+                        </div>
+
+                        <textarea name="comment" placeholder="اكتب رأيك وتجربتك مع المنتج هنا..." required></textarea>
+                        <button type="submit" class="btn-submit-review">نشر التقييم 🚀</button>
+                    </form>
+                {% else %}
+    <div style="text-align: center; padding: 20px;">
+        <p>يجب عليك تسجيل الدخول لتتمكن من التقييم</p>
+        
+        <a href="{% url 'login' %}?next={{ request.path }}" class="btn-login" style="display: inline-block; margin-top: 10px;">
+            تسجيل الدخول
+        </a>
+
+    </div>
+{% endif %}
+        </div>
+
+    <script src="{% static 'js/script.js' %}"></script>
+    </body>
+</html>

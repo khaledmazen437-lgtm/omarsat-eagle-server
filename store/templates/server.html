@@ -1,0 +1,167 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>سيرفر إيجل | Omar Sat</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;700;900&display=swap" rel="stylesheet">
+</head>
+<body class="server-body">
+
+    {% if news_list %}
+    <div class="server-ticker-bar" style="background: linear-gradient(90deg, #2a0038, #bc13fe, #2a0038); padding: 10px; margin: 20px 0; color: white;">
+        <div class="ticker">
+            {% for news in news_list %}
+                <span style="margin: 0 30px;"><i class="fa fa-bullhorn"></i> {{ news.title }}: {{ news.content }}</span>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <nav class="navbar">
+        <div class="logo">
+            <a href="{% url 'home' %}" style="text-decoration: none; color: white;">
+                Omar<span class="neon-text">Sat</span>
+            </a>
+        </div>
+    </nav>
+
+    <div class="server-header" style="margin-top: 60px;">
+        <h1>باقات <span class="neon-text" style="color: var(--server-color);">Eagle Sat</span></h1>
+        <p class="status">حالة السيرفر: <span class="online">● Online</span></p>
+    </div>
+
+    <div class="container server-layout-grid">
+        
+        
+        <div class="main-content-area">
+            
+            <div class="server-tabs">
+                <button class="tab-btn active" id="iptv-btn" onclick="openTab('iptv', this)">IPTV</button>
+                <button class="tab-btn" id="cccam-btn" onclick="openTab('cccam', this)">Sharing</button>
+                <button class="tab-btn" id="working-btn" onclick="openTab('working', this)">الباقات العاملة</button>
+            </div>
+  
+           
+            <div id="iptv" class="tab-content">
+                <div class="pricing-container">
+                    {% for plan in iptv_plans %}
+                    <div class="plan-card">
+                        {% if plan.image %}
+                            <img src="{{ plan.image.url }}" alt="{{ plan.name }}" class="plan-image">
+                        {% endif %}
+                        <div class="plan-header">
+                            <h3>{{ plan.name }}</h3>
+                            <div class="price">{{ plan.price }} <span>ج.م</span></div>
+                        </div>
+                        <ul class="features">
+                            <li>⏳ المدة: {{ plan.duration }} شهور</li>
+                            {% if plan.features %}<li style="white-space: pre-line;">{{ plan.features|linebreaks }}</li>{% endif %}
+                        </ul>
+                        <a href="https://wa.me/+201011058982?text=السلام عليكم، محتاج أشترك في باقة ({{ plan.name }}) بسعر {{ plan.price }} جنيه" 
+                           class="plan-btn" 
+                           target="_blank">
+                           <i class="fa-brands fa-whatsapp"></i> اشترك الآن
+                        </a>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div id="cccam" class="tab-content" style="display: none;">
+                <div class="pricing-container">
+                    {% for plan in cccam_plans %}
+                    <div class="plan-card" style="border-color: #ff0055;">
+                        {% if plan.image %}
+                            <img src="{{ plan.image.url }}" alt="{{ plan.name }}" class="plan-image">
+                        {% endif %}
+                        <div class="plan-header">
+                            <h3 style="color: #ff0055;">{{ plan.name }}</h3>
+                            <div class="price" style="color: #ff0055;">{{ plan.price }} <span>ج.م</span></div>
+                        </div>
+                        <ul class="features">
+                            <li>⏳ المدة: {{ plan.duration }} شهور</li>
+                            <li>✅ شيرنج أقمار</li>
+                            {% if plan.features %}<li style="white-space: pre-line;">{{ plan.features|linebreaks }}</li>{% endif %}
+                        </ul>
+
+                        <a href="https://wa.me/+201011058982?text=السلام عليكم، محتاج أشترك في باقة الشيرنج ({{ plan.name }}) بسعر {{ plan.price }} جنيه" 
+                           class="plan-btn" 
+                           style="border-color: #ff0055; color: #ff0055;"
+                           target="_blank">
+                           <i class="fa-brands fa-whatsapp"></i> اشترك الآن
+                        </a>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+
+            <div id="working" class="tab-content" style="display: none;">
+                <div class="report-main-card"> 
+                    {% for report in working_packages %}
+                    <div class="report-header">
+                        {% if report.image %}
+                            <img src="{{ report.image.url }}" alt="{{ report.name }}" class="report-image-centered">
+                        {% endif %}
+                        <h3 style="color: var(--neon-orange);">{{ report.name }}</h3>
+                        <div class="report-status-badge {{ report.status|lower }}"> 
+                            {{ report.status }}
+                        </div> 
+                    </div>
+                    
+                    <div class="report-details">
+                        <p class="last-update">🗓️ آخر تحديث: {{ report.last_updated|date:"Y-m-d H:i" }}</p>
+                        {% if report.report_details %}
+                            <div class="report-content">
+                                {{ report.report_details|linebreaks }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <a href="#" class="report-btn" 
+                       style="background: var(--neon-blue); color: white; border: none;"
+                       onclick="alert('تقرير حالة الخادم: {{ report.name }}')">
+                       <i class="fa fa-chart-line"></i> عرض التقرير
+                    </a>
+                    {% endfor %}
+                </div>
+                </div>
+            
+        </div> </div> <script>
+        function openTab(tabName, btn) {
+            var iptvContent = document.getElementById('iptv');
+            var cccamContent = document.getElementById('cccam');
+            var workingContent = document.getElementById('working');
+            
+            if (iptvContent && cccamContent && workingContent) {
+                iptvContent.style.display = 'none';
+                cccamContent.style.display = 'none';
+                workingContent.style.display = 'none'; 
+                
+                document.getElementById(tabName).style.display = 'block';
+            }
+
+            var buttons = document.getElementsByClassName('tab-btn');
+            for(var i=0; i<buttons.length; i++) buttons[i].classList.remove('active');
+            btn.classList.add('active');
+        }
+    </script>
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+          new google.translate.TranslateElement({pageLanguage: 'ar', includedLanguages: 'ar,en,tr,es,fr,de,ru,it', layout: google.translate.TranslateElement.InlineLayout.SIMPLE}, 'google_translate_element');
+        }
+    </script>
+    <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    <script>
+        function toggleFloatMenu() {
+            document.getElementById('floatMenu').classList.toggle('active');
+        }
+    </script>
+    
+
+</body>
+</html>
