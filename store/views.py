@@ -193,13 +193,19 @@ def checkout(request):
         messages.warning(request, "السلة فارغة يا صديقي! ضيف منتجات الأول 🛒")
         return redirect('store')
 
-    # 2. حساب المجاميع
+    # 🛑 2. التحقق من تسجيل الدخول (Smart Redirect Logic) 🛑
+    if not request.user.is_authenticated:
+        messages.error(request, "يجب تسجيل الدخول لإتمام الطلب.")
+        # بنقوله: روح Login وخد معاك رابط الـ checkout في شنطتك (next)
+        return redirect(f'/login/?next={request.path}')
+
+    # 3. حساب المجاميع
     total = sum(Decimal(item.product.price) * item.quantity for item in cart_items)
     shipping_fee = sum(Decimal(item.product.shipping_fee) * item.quantity for item in cart_items)
     tax = Decimal('0.00')
     grand_total = total + shipping_fee + tax
 
-    # 🛑 3. معالجة زر "تأكيد الطلب" (POST Request)
+    # 4. معالجة زر "تأكيد الطلب" (POST Request)
     if request.method == 'POST':
         # استلام البيانات
         full_name = request.POST.get('full_name')
@@ -209,16 +215,13 @@ def checkout(request):
         payment_method = request.POST.get('payment_method')
         payment_screenshot = request.FILES.get('receiptImage')
 
-        # تحديد صاحب الطلب (لو مسجل خده، لو زائر خليه None)
-        order_user = request.user if request.user.is_authenticated else None
-
         try:
-            # إنشاء وحفظ الطلب الرئيسي (Order)
+            # إنشاء الطلب (المستخدم مضمون إنه موجود الآن)
             new_order = Order.objects.create(
-                user=order_user, 
+                user=request.user, 
                 full_name=full_name,
                 phone_number=phone,
-                address=f"{city} - {address_input}",
+                address=f"{city} - {address_input}", 
                 total_price=grand_total,
                 payment_method=payment_method,
                 payment_screenshot=payment_screenshot,
@@ -228,7 +231,6 @@ def checkout(request):
             # منطق اشتراكات السيرفر
             is_subscription = False
             for item in cart_items:
-                # إذا كان المنتج يحتوي على خاصية الاشتراك (يفترض وجود الحقل)
                 if hasattr(item.product, 'is_subscription') and item.product.is_subscription:
                     is_subscription = True
                     break
@@ -238,33 +240,28 @@ def checkout(request):
                 new_order.expiry_date = date.today() + timedelta(days=365)
                 new_order.save()
 
-            # نقل المنتجات وحفظها في OrderItems
+            # نقل المنتجات
             for item in cart_items:
                 OrderItem.objects.create(
                     order=new_order,
                     product=item.product,
                     quantity=item.quantity,
                     product_price=item.product.price,
-                    user=order_user
+                    user=request.user
                 )
 
             # تنظيف السلة
             cart_items.delete()
 
             messages.success(request, "تم استلام طلبك بنجاح! سيتم مراجعته قريباً.")
-            
-            # 🚨 توجيه ذكي: لو مسجل يروح طلباته، لو زائر يروح الرئيسية
-            if request.user.is_authenticated:
-                return redirect('profile')
-            else:
-                return redirect('home') 
+            return redirect('profile') # يروح يشوف طلبه
 
         except Exception as e:
             print(f"❌ خطأ قاتل عند حفظ الطلب: {e}")
             messages.error(request, f"حدث خطأ أثناء حفظ الطلب. (السبب: {e})")
             return redirect('checkout')
 
-    # 4. عرض الصفحة (GET Request)
+    # 5. عرض الصفحة (GET Request)
     context = {
         'cart_items': cart_items,
         'total': total,
@@ -273,9 +270,6 @@ def checkout(request):
         'grand_total': grand_total,
     }
     return render(request, 'checkout.html', context)
-
-
-# ===============================================
 # 5. دوال المصادقة والبروفايل والتقييم والبحث
 # ===============================================
 
@@ -305,28 +299,30 @@ def signup_view(request):
         return redirect('login')
 
     return render(request, 'register.html')
-
 def login_view(request):
+    # بنشوف هل فيه رابط عودة في العنوان (GET) أو في الفورم (POST)
+    next_url = request.GET.get('next') or request.POST.get('next')
+
     if request.method == 'POST':
         username = request.POST.get('username')
         pass_word = request.POST.get('password')
-        next_url = request.POST.get('next') # استلام رابط الصفحة التالية
-
+        
         user = authenticate(request, username=username, password=pass_word)
         
         if user is not None:
             login(request, user) 
             messages.success(request, f"مرحباً بك مجدداً يا {username}!") 
             
+            # 🛑 هنا الذكاء: التوجيه حسب الحالة 🛑
             if next_url:
-                return redirect(next_url)
+                return redirect(next_url) # يرجع checkout
             else:
-                return redirect('home') 
+                return redirect('home')   # يروح الرئيسية
         else:
             messages.error(request, "اسم المستخدم أو كلمة المرور خطأ ❌") 
             
-    return render(request, 'login.html')
-
+    # بنبعت next للصفحة عشان تحطه في حقل مخفي
+    return render(request, 'login.html', {'next': next_url})
 def logout_view(request):
     logout(request)
     return redirect('home')
