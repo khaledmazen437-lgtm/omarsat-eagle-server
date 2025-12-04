@@ -5,13 +5,13 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Q 
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.models import User
-from decimal import Decimal # 👈 لضمان دقة حساب العملة
+from decimal import Decimal 
 from datetime import date, timedelta 
 
 # موديلات التطبيق الحالي
 from .models import Product, Review, Order, OrderItem, Cart, CartItem 
 # موديلات التطبيقات الخارجية
-from eagle_server.models import ServerPlan, ServerNews 
+from eagle_server.models import ServerPlan, ServerNews, ServerReport
 
 
 # ===============================================
@@ -50,11 +50,16 @@ def store_view(request):
 def server_view(request):
     iptv_plans = ServerPlan.objects.filter(server_type='iptv')
     cccam_plans = ServerPlan.objects.filter(server_type='cccam')
+    
+    # جلب التقارير من الموديل الصحيح
+    working_packages = ServerReport.objects.all().order_by('name')
+    
     latest_news = ServerNews.objects.all().order_by('-date_posted')
     
     return render(request, 'server.html', {
         'iptv_plans': iptv_plans,
         'cccam_plans': cccam_plans,
+        'working_packages': working_packages,
         'news_list': latest_news 
     })
 
@@ -95,16 +100,7 @@ def add_to_cart(request, product_id):
     messages.success(request, f"{product.name} تمت إضافته للسلة!")
     return redirect('cart')
 
-
-
-# في ملف store/views.py
-
-# ... (بعد دالة add_to_cart) ...
-
 def increase_quantity(request, product_id):
-    """زيادة كمية المنتج في السلة بمقدار 1"""
-    
-    # 1. تحديد شروط البحث: المستخدم الحالي أو معرف الجلسة
     if request.user.is_authenticated:
         query_filter = Q(user=request.user, product_id=product_id)
     else:
@@ -119,16 +115,12 @@ def increase_quantity(request, product_id):
         cart_item.quantity += 1
         cart_item.save()
     except CartItem.DoesNotExist:
-        # إذا لم يتم العثور عليه، نعود للصفحة الرئيسية
         pass
         
     return redirect('cart')
 
 
 def decrease_quantity(request, product_id):
-    """إنقاص كمية المنتج في السلة، وإذا وصلت للصفر يتم حذفه"""
-
-    # 1. تحديد شروط البحث: المستخدم الحالي أو معرف الجلسة
     if request.user.is_authenticated:
         query_filter = Q(user=request.user, product_id=product_id)
     else:
@@ -140,21 +132,15 @@ def decrease_quantity(request, product_id):
             
     try:
         cart_item = CartItem.objects.get(query_filter)
-        
         if cart_item.quantity > 1:
             cart_item.quantity -= 1
             cart_item.save()
         else:
-            # إذا كانت الكمية 1 أو أقل، نقوم بحذف المنتج من السلة بالكامل
             cart_item.delete()
-            
     except CartItem.DoesNotExist:
-        # إذا لم يتم العثور عليه، نعود للصفحة الرئيسية
         pass
         
     return redirect('cart')
-
-# ... (قبل دالة remove_from_cart) ...
 
 def remove_from_cart(request, product_id):
     if request.user.is_authenticated:
@@ -182,7 +168,7 @@ def cart_view(request):
         total += price * cart_item.quantity
         total_shipping += shipping * cart_item.quantity
     
-    tax = Decimal('0.00') # إلغاء الضريبة
+    tax = Decimal('0.00') 
     grand_total = total + total_shipping + tax 
 
     context = {
@@ -207,7 +193,7 @@ def checkout(request):
         messages.warning(request, "السلة فارغة يا صديقي! ضيف منتجات الأول 🛒")
         return redirect('store')
 
-    # 2. حساب المجاميع (Total, Shipping, Tax)
+    # 2. حساب المجاميع
     total = sum(Decimal(item.product.price) * item.quantity for item in cart_items)
     shipping_fee = sum(Decimal(item.product.shipping_fee) * item.quantity for item in cart_items)
     tax = Decimal('0.00')
@@ -215,33 +201,42 @@ def checkout(request):
 
     # 🛑 3. معالجة زر "تأكيد الطلب" (POST Request)
     if request.method == 'POST':
-        if not request.user.is_authenticated:
-            messages.error(request, "يجب تسجيل الدخول لإتمام الطلب.")
-            return redirect('login')
-        return redirect(f'/login/?next={request.path}')
-
-            
         # استلام البيانات
         full_name = request.POST.get('full_name')
         phone = request.POST.get('phone')
-        address_input = request.POST.get('address') # تم تعديل الاسم
+        address_input = request.POST.get('address')
         city = request.POST.get('city')
         payment_method = request.POST.get('payment_method')
         payment_screenshot = request.FILES.get('receiptImage')
 
+        # تحديد صاحب الطلب (لو مسجل خده، لو زائر خليه None)
+        order_user = request.user if request.user.is_authenticated else None
+
         try:
             # إنشاء وحفظ الطلب الرئيسي (Order)
             new_order = Order.objects.create(
-                user=request.user,
+                user=order_user, 
                 full_name=full_name,
                 phone_number=phone,
-                # ندمج المدينة والعنوان معًا لحقل العنوان
-                address=f"{city} - {address_input}", 
+                address=f"{city} - {address_input}",
                 total_price=grand_total,
                 payment_method=payment_method,
                 payment_screenshot=payment_screenshot,
                 ip_address=request.META.get('REMOTE_ADDR')
             )
+
+            # منطق اشتراكات السيرفر
+            is_subscription = False
+            for item in cart_items:
+                # إذا كان المنتج يحتوي على خاصية الاشتراك (يفترض وجود الحقل)
+                if hasattr(item.product, 'is_subscription') and item.product.is_subscription:
+                    is_subscription = True
+                    break
+            
+            if is_subscription:
+                new_order.is_server_plan = True
+                new_order.expiry_date = date.today() + timedelta(days=365)
+                new_order.save()
 
             # نقل المنتجات وحفظها في OrderItems
             for item in cart_items:
@@ -250,17 +245,21 @@ def checkout(request):
                     product=item.product,
                     quantity=item.quantity,
                     product_price=item.product.price,
-                    user=request.user
+                    user=order_user
                 )
 
-            # تنظيف السلة ومسح المنتجات من الداتابيز
+            # تنظيف السلة
             cart_items.delete()
 
             messages.success(request, "تم استلام طلبك بنجاح! سيتم مراجعته قريباً.")
-            return redirect('profile')
+            
+            # 🚨 توجيه ذكي: لو مسجل يروح طلباته، لو زائر يروح الرئيسية
+            if request.user.is_authenticated:
+                return redirect('profile')
+            else:
+                return redirect('home') 
 
         except Exception as e:
-            # 🚨🚨 هذا الجزء سيكشف سبب فشل الحفظ في الداتابيز 🚨🚨
             print(f"❌ خطأ قاتل عند حفظ الطلب: {e}")
             messages.error(request, f"حدث خطأ أثناء حفظ الطلب. (السبب: {e})")
             return redirect('checkout')
@@ -287,22 +286,18 @@ def signup_view(request):
         password = request.POST.get('password')
         confirm_password = request.POST.get('confirm_password')
 
-        # 1. التحقق من تطابق الباسورد
         if password != confirm_password:
             messages.error(request, 'كلمة المرور وتأكيدها غير متطابقين.')
             return render(request, 'register.html')
         
-        # 2. التحقق من عدم وجود المستخدم مسبقاً
         if User.objects.filter(username=username).exists():
-            messages.error(request, 'اسم المستخدم موجود بالفعل، اختر اسماً آخر.')
+            messages.error(request, 'اسم المستخدم موجود بالفعل.')
             return render(request, 'register.html')
         
         if User.objects.filter(email=email).exists():
             messages.error(request, 'البريد الإلكتروني مسجل مسبقاً.')
             return render(request, 'register.html')
 
-        # 🛑 3. إنشاء المستخدم (بالتشفير الصحيح) 🛑
-        # create_user هي الدالة السحرية اللي بتشفر الباسورد
         user = User.objects.create_user(username=username, email=email, password=password)
         user.save()
         
@@ -315,9 +310,7 @@ def login_view(request):
     if request.method == 'POST':
         username = request.POST.get('username')
         pass_word = request.POST.get('password')
-        
-        # استلام رابط الصفحة التالية (لو موجود)
-        next_url = request.POST.get('next')
+        next_url = request.POST.get('next') # استلام رابط الصفحة التالية
 
         user = authenticate(request, username=username, password=pass_word)
         
@@ -325,7 +318,6 @@ def login_view(request):
             login(request, user) 
             messages.success(request, f"مرحباً بك مجدداً يا {username}!") 
             
-            # 🚨 هنا الذكاء: لو فيه next روح له، لو مفيش روح للرئيسية
             if next_url:
                 return redirect(next_url)
             else:
@@ -334,6 +326,7 @@ def login_view(request):
             messages.error(request, "اسم المستخدم أو كلمة المرور خطأ ❌") 
             
     return render(request, 'login.html')
+
 def logout_view(request):
     logout(request)
     return redirect('home')
@@ -347,7 +340,6 @@ def profile_view(request):
 def add_review(request, product_id):
     if request.method == 'POST':
         product = get_object_or_404(Product, id=product_id)
-        
         rating_value = request.POST.get('rating')
         comment_text = request.POST.get('comment')
         
@@ -371,19 +363,13 @@ def about_us_view(request):
 def contact_us_view(request):
     return redirect('home') 
 
-# ===============================================
-# 5. دالة البحث (Search Logic)
-# ===============================================
-
 def search_view(request):
     query = request.GET.get('q', '').strip()
-    
     products = []
     iptv_plans = []
     cccam_plans = []
 
     if query:
-        # القاموس الموسع لترجمة الكلمات العربية لأكواد الداتابيز
         keyword_map = {
             'رسيفر': 'receiver', 'ريسيفر': 'receiver', 'رسيفير': 'receiver', 'ريسفير': 'receiver', 'رسفر': 'receiver', 'جهاز': 'receiver',
             'عدس': 'lnb', 'قطعة': 'lnb', 'لاقط': 'lnb', 'طبق': 'lnb', 'اطباق': 'lnb', 'دش': 'lnb',
@@ -398,14 +384,14 @@ def search_view(request):
             if word in query.lower():
                 target_codes.append(code)
 
-        # 1. البحث في المنتجات
+        # البحث في المنتجات
         products = Product.objects.filter(
             Q(name__icontains=query) | Q(description__icontains=query) |
             Q(category__icontains=query) |
             Q(category__in=target_codes) 
         ).distinct()
 
-        # 2. البحث في السيرفرات
+        # البحث في السيرفرات
         all_plans = ServerPlan.objects.filter(
             Q(name__icontains=query) | Q(features__icontains=query) |
             Q(server_type__icontains=query)
