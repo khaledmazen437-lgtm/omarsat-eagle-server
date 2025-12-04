@@ -54,21 +54,19 @@
             <h2>أهلاً بك يا كبير 👋</h2>
             
             <form method="POST" action="">
-
-                {% csrf_token %}
-                <input type="hidden" name="next" value="{{ request.GET.next }}">
-                
-                <div class="input-box">
-                    <input type="text" name="username" required>
-                    <label>اسم المستخدم</label>
-                </div>
-                <div class="input-box">
-                    <input type="password" name="password" required>
-                    <label>كلمة المرور</label>
-                </div>
-                
-                <button type="submit" class="btn-login-submit">تسجيل الدخول</button>
-            </form>
+    {% csrf_token %}
+    
+    <input type="hidden" name="next" value="{{ request.GET.next }}">
+    
+    <div class="input-group">
+        <input type="text" name="username" placeholder="اسم المستخدم" required>
+    </div>
+    <div class="input-group">
+        <input type="password" name="password" placeholder="كلمة المرور" required>
+    </div>
+    
+    <button type="submit" class="btn-login-submit">تسجيل الدخول</button>
+</form>
             
             <div class="login-footer">
                 <p>ليس لديك حساب؟ <a href="{% url 'signup' %}">أنشئ حساب جديد</a></p>

@@ -18,6 +18,7 @@ ALLOWED_HOSTS = ['*']
 
 # 4. التطبيقات المثبتة
 INSTALLED_APPS = [
+    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -134,3 +135,62 @@ SESSION_COOKIE_SECURE = False
 
 # تخصيص عنوان لوحة التحكم
 ADMIN_SITE_HEADER = 'لوحة تحكم Omar Sat'
+
+
+# ==========================================
+# 🎨 إعدادات شكل لوحة التحكم (Jazzmin)
+# ==========================================
+
+JAZZMIN_SETTINGS = {
+    # العناوين
+    "site_title": "Omar Sat Admin",
+    "site_header": "Omar Sat",
+    "site_brand": "Omar Sat System",
+    "welcome_sign": "مرحباً بك في لوحة تحكم عمر سات 🚀",
+    "copyright": "Omar Sat Ltd",
+    
+    # الأيقونات للقائمة الجانبية
+    "icons": {
+        "auth": "fas fa-users-cog",
+        "auth.user": "fas fa-user",
+        "auth.Group": "fas fa-users",
+        "store.Product": "fas fa-box-open",
+        "store.Order": "fas fa-shopping-cart",
+        "store.Review": "fas fa-star",
+        "eagle_server.ServerPlan": "fas fa-server",
+        "eagle_server.ServerReport": "fas fa-chart-line",
+        "eagle_server.ServerNews": "fas fa-newspaper",
+    },
+    
+    # خيارات العرض
+    "show_ui_builder": False, # اقفلها لما تستقر على الشكل
+    "changeform_format": "horizontal_tabs",
+}
+
+# 🌑 الثيم الغامق (Dark Theme) 🌑
+JAZZMIN_UI_TWEAKS = {
+    "navbar_small_text": False,
+    "footer_small_text": False,
+    "body_small_text": False,
+    "brand_small_text": False,
+    "brand_colour": "navbar-dark",
+    "accent": "accent-primary",
+    "navbar": "navbar-dark",
+    "no_navbar_border": False,
+    "navbar_fixed": False,
+    "layout_boxed": False,
+    "footer_fixed": False,
+    "sidebar_fixed": True,
+    "sidebar": "sidebar-dark-primary",
+    "sidebar_nav_small_text": False,
+    "theme": "cyborg",  # 👈 ده الثيم الغامق اللي بيليق مع النيون
+    "dark_mode_theme": "cyborg",
+    "button_classes": {
+        "primary": "btn-primary",
+        "secondary": "btn-secondary",
+        "info": "btn-info",
+        "warning": "btn-warning",
+        "danger": "btn-danger",
+        "success": "btn-success"
+    }
+}

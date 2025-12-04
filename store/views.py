@@ -218,6 +218,8 @@ def checkout(request):
         if not request.user.is_authenticated:
             messages.error(request, "يجب تسجيل الدخول لإتمام الطلب.")
             return redirect('login')
+        return redirect(f'/login/?next={request.path}')
+
             
         # استلام البيانات
         full_name = request.POST.get('full_name')
@@ -280,8 +282,33 @@ def checkout(request):
 
 def signup_view(request):
     if request.method == 'POST':
-        # ... (Signup logic goes here) ...
-        pass
+        username = request.POST.get('username')
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        confirm_password = request.POST.get('confirm_password')
+
+        # 1. التحقق من تطابق الباسورد
+        if password != confirm_password:
+            messages.error(request, 'كلمة المرور وتأكيدها غير متطابقين.')
+            return render(request, 'register.html')
+        
+        # 2. التحقق من عدم وجود المستخدم مسبقاً
+        if User.objects.filter(username=username).exists():
+            messages.error(request, 'اسم المستخدم موجود بالفعل، اختر اسماً آخر.')
+            return render(request, 'register.html')
+        
+        if User.objects.filter(email=email).exists():
+            messages.error(request, 'البريد الإلكتروني مسجل مسبقاً.')
+            return render(request, 'register.html')
+
+        # 🛑 3. إنشاء المستخدم (بالتشفير الصحيح) 🛑
+        # create_user هي الدالة السحرية اللي بتشفر الباسورد
+        user = User.objects.create_user(username=username, email=email, password=password)
+        user.save()
+        
+        messages.success(request, 'تم إنشاء الحساب بنجاح! يمكنك تسجيل الدخول الآن.')
+        return redirect('login')
+
     return render(request, 'register.html')
 
 def login_view(request):
@@ -289,17 +316,24 @@ def login_view(request):
         username = request.POST.get('username')
         pass_word = request.POST.get('password')
         
+        # استلام رابط الصفحة التالية (لو موجود)
+        next_url = request.POST.get('next')
+
         user = authenticate(request, username=username, password=pass_word)
         
         if user is not None:
             login(request, user) 
             messages.success(request, f"مرحباً بك مجدداً يا {username}!") 
-            return redirect('home') 
+            
+            # 🚨 هنا الذكاء: لو فيه next روح له، لو مفيش روح للرئيسية
+            if next_url:
+                return redirect(next_url)
+            else:
+                return redirect('home') 
         else:
             messages.error(request, "اسم المستخدم أو كلمة المرور خطأ ❌") 
             
     return render(request, 'login.html')
-
 def logout_view(request):
     logout(request)
     return redirect('home')
