@@ -1,0 +1,327 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ page_title|default:"الشروحات والتطبيقات" }} | Omar Sat</title>
+    
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;700;900&display=swap" rel="stylesheet">
+    
+    <style>
+        /* تنسيق زرار الهامبرجر */
+        .hamburger-btn {
+            background: transparent;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            font-size: 22px;
+            cursor: pointer;
+            padding: 5px 12px;
+            border-radius: 5px;
+            margin-left: 15px;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .hamburger-btn:hover {
+            border-color: #00d2d3;
+            color: #00d2d3;
+        }
+
+        /* تنسيق القائمة الجانبية (Sidebar) */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            right: -300px;
+            width: 280px; 
+            max-width: 90vw; 
+            height: 100vh;
+            background: #1a1a1a;
+            z-index: 9999;
+            transition: right 0.4s ease;
+            padding: 25px 20px; 
+            box-shadow: -5px 0 15px rgba(0,0,0,0.5);
+            overflow-y: auto;
+            box-sizing: border-box; 
+        }
+        .sidebar.active {
+            right: 0 !important;
+        }
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 9998;
+            display: none;
+        }
+        .overlay.active {
+            display: block;
+        }
+        
+        /* تنسيق روابط القائمة */
+        .sidebar-list { list-style: none; padding: 0; margin-top: 25px; } 
+        .sidebar-list li { margin-bottom: 12px; border-bottom: 1px solid #333; } 
+        .sidebar-list a { 
+            color: #ddd; text-decoration: none; font-size: 17px; display: block; padding: 10px 5px; 
+            display: flex; align-items: center; gap: 10px;
+        }
+        .sidebar-list a:hover { color: #00d2d3; padding-right: 15px; transition: 0.3s; }
+        .close-btn { background: none; border: none; color: #ff4757; font-size: 28px; cursor: pointer; float: left; }
+
+        /* ================================================= */
+        /* شبكة عرض الفيديوهات (Video Grid) */
+        /* ================================================= */
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .video-card {
+            background: #1a1a1a;
+            color: #ddd;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            border: 1px solid #333;
+            overflow: hidden;
+            transition: 0.3s;
+        }
+        .video-card:hover {
+            border-color: #00d2d3;
+            transform: translateY(-3px);
+        }
+
+        .video-embed {
+            width: 100%;
+            height: 200px; /* ارتفاع ثابت لمشغل الفيديو */
+        }
+        
+        .video-info {
+            padding: 15px;
+        }
+        .video-info h4 {
+            color: #fff;
+            margin-top: 0;
+            margin-bottom: 10px;
+            font-size: 1.3rem;
+        }
+        .video-info p {
+            color: #aaa;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+        
+        /* ================================================= */
+        /* 1. تنسيقات التجاوب القوية (768px وأقل) */
+        /* ================================================= */
+
+        @media (max-width: 768px) {
+            
+            /* 🛑 FIX 1: إخفاء شريط الإعلانات المتحرك نهائياً (Top Ticker) */
+            .top-bar-mhd {
+                display: none !important;
+            }
+            
+            /* FIX 2: تعديل هيكل الـ Navbar ليكون صف واحد ضيق ومرتب */
+            .navbar {
+                flex-direction: row !important;
+                justify-content: space-between !important;
+                padding: 10px 15px;
+                min-height: 50px; 
+                z-index: 100;
+            }
+
+            /* إخفاء شريط البحث تماماً لتقليل الازدحام */
+            .search-bar-styled {
+                display: none !important;
+            }
+            
+            /* إخفاء أيقونات الدخول والسلة لتبقى فقط في القائمة الجانبية */
+            .nav-icons {
+                display: none !important;
+            }
+            
+            /* إخفاء شريط التنقل الأفقي */
+            .nav-links {
+                display: none !important;
+            }
+            
+            /* جعل اللوجو والهمبرجر يتوزعان بشكل نظيف في الصف العلوي */
+            .nav-right {
+                width: 100%; 
+                flex-shrink: 0;
+                margin-bottom: 0;
+                display: flex;
+                align-items: center;
+                justify-content: space-between; 
+            }
+
+            /* ✅ جعل كروت الفيديوهات في عمود واحد */
+            .video-grid {
+                grid-template-columns: 1fr;
+                padding: 0 15px;
+                gap: 20px;
+            }
+            .video-embed {
+                height: 250px; 
+            }
+
+            /* ضبط حجم العنوان */
+            .page-header h1 {
+                font-size: 2.2rem !important;
+            }
+        }
+
+        /* ================================================= */
+        /* 2. تنسيقات الهواتف الصغيرة جداً (Small Phones < 425px) */
+        /* ================================================= */
+        @media (max-width: 425px) {
+            .navbar {
+                padding: 10px 5px !important;
+            }
+            .page-header h1 {
+                font-size: 1.8rem !important;
+            }
+            .sidebar {
+                 width: 250px; 
+            }
+            .video-embed {
+                height: 180px; 
+            }
+        }
+    </style>
+    
+</head>
+
+<body style="background-color: #000; color: white;">
+
+    <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
+    
+    <div class="sidebar" id="sidebarMenu">
+        <div class="sidebar-header" style="overflow: hidden; padding-bottom: 10px;">
+            <h3 style="float: right; color: white; margin: 0;">الأقسام</h3>
+            <button class="close-btn" onclick="toggleMenu()">&times;</button>
+        </div>
+        
+        <ul class="sidebar-list">
+             <li><a href="{% url 'cart' %}"><i class="fa fa-shopping-cart"></i> السلة</a></li>
+            <li><a href="{% url 'profile' %}"><i class="fa fa-user-circle"></i> حسابي</a></li>
+            
+            <li style="margin-top: 20px; border-top: 1px solid #333;">
+                <a href="{% url 'home' %}"><i class="fa fa-home"></i> الرئيسية</a>
+            </li>
+            <li><a href="{% url 'store' %}"><i class="fa fa-store"></i> المتجر</a></li>
+            <li><a href="{% url 'server' %}"><i class="fa fa-server"></i> السيرفر</a></li>
+            <li><a href="{% url 'discounts' %}"><i class="fa fa-percent"></i> خصومات</a></li>
+            <li><a href="{% url 'wishlist' %}"><i class="fa fa-heart"></i> المفضلة</a></li>
+            
+            <li style="margin-top: 20px; border-top: 1px solid #333;">
+                <a href="{% url 'tutorials' %}" style="color: #ffc107;" onclick="toggleMenu()">
+                    <i class="fa fa-video"></i> شروحات وتطبيقات
+                </a>
+            </li>
+
+            <li>
+                <a href="{% url 'channel_files_center' %}" style="color: #00d2d3;" onclick="toggleMenu()">
+                    <i class="fa fa-download"></i> مركز ملفات القنوات والسوفت وير
+                </a>
+            </li>
+        </ul>
+        </div>
+    
+    <div class="top-bar-mhd">
+        <div class="ticker-wrap">
+            <div class="ticker">
+                <div class="ticker-item"><i class="fa fa-truck"></i> شحن لجميع المحافظات 🚛</div>
+                <div class="ticker-item"><i class="fa fa-headset"></i> دعم فني 24 ساعة 🎧</div>
+                <div class="ticker-item"><i class="fa fa-tag"></i> عروض حصرية 💸</div>
+            </div>
+        </div>
+    </div>
+
+    <nav class="navbar" style="display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; background-color: #000;">
+        
+        <div class="nav-right" style="display: flex; align-items: center; width: 100%;">
+            
+            <div class="logo">
+                <a href="{% url 'home' %}">omar sat.<span class="neon-text">Store</span></a>
+            </div>
+
+            <button class="hamburger-btn" onclick="toggleMenu()">
+                <i class="fa fa-bars"></i>
+            </button>
+        </div>
+        
+        <ul class="nav-links">
+            <li><a href="{% url 'home' %}">الرئيسية</a></li>
+            <li><a href="{% url 'store' %}">المتجر</a></li>
+            <li><a href="{% url 'server' %}">السيرفر</a></li>
+            
+            <li><a href="{% url 'discounts' %}">خصومات</a></li>
+            <li><a href="{% url 'wishlist' %}">المفضلة</a></li>
+        </ul>
+
+        <div class="nav-icons">
+             <div class="search-bar-styled">
+                <form action="{% url 'search' %}" method="GET">
+                    <input type="text" name="q" placeholder="بحث..." value="{{ request.GET.q }}">
+                    <button type="submit"><i class="fa fa-search"></i></button>
+                </form>
+            </div>
+            </div>
+    </nav>
+
+    <div class="page-header" style="margin-top: 80px; text-align: center;">
+        <h1>{{ page_title|default:"الشروحات والتطبيقات" }}</h1>
+        <p>شروحات مرئية لطرق التشغيل والتحديثات.</p>
+    </div>
+
+    <div class="video-grid">
+        {% for video in videos %}
+        <div class="video-card">
+            
+            <iframe 
+                class="video-embed" 
+                src="{{ video.get_embed_url|safe }}" 
+                frameborder="0" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                allowfullscreen>
+            </iframe>
+
+            <div class="video-info">
+                <h4>{{ video.title }}</h4>
+                <p>{{ video.description }}</p>
+                <small style="color: #00d2d3;"><i class="fa fa-clock"></i> تم الإضافة: {{ video.date_added|date:"d/m/Y" }}</small>
+            </div>
+            
+        </div>
+        {% empty %}
+        <p style="text-align: center; grid-column: 1 / -1; color: #aaa;">
+            لا توجد شروحات متاحة حالياً.
+        </p>
+        {% endfor %}
+    </div>
+    
+    
+
+    <script>
+        function toggleMenu() {
+            const sidebar = document.getElementById('sidebarMenu');
+            const overlay = document.getElementById('overlay');
+            if (sidebar && overlay) {
+                sidebar.classList.toggle('active');
+                overlay.classList.toggle('active');
+            }
+        }
+    </script>
+</body>
+</html>

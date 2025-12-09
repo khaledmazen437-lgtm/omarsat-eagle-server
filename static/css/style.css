@@ -54,7 +54,8 @@ ul { list-style: none; }
 .ticker-item {
     display: inline-block;
     padding: 0 2rem;
-    font-size: 0.9rem;
+    font-size: 8rem;
+    font-weight: 900;
     color: #ccc;
 }
 
@@ -316,6 +317,7 @@ ul { list-style: none; }
     font-size: 1.2rem;
     margin-bottom: 30px;
     opacity: 0.8;
+    color: #000;
 }
 
 /* Buttons inside Split */
@@ -3377,4 +3379,276 @@ body,
         z-index: 10000; 
     }
 }
+/* زرار الهامبرجر */
+        .hamburger-btn {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 24px;
+            cursor: pointer;
+            margin-left: 15px; /* مسافة بينه وبين اللوجو */
+            display: flex;
+            align-items: center;
+        }
 
+        /* القائمة الجانبية */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            right: -280px; /* مخفية يمين الشاشة */
+            width: 280px;
+            height: 100%;
+            background-color: #1a1a1a; /* لون غامق مناسب للثيم */
+            box-shadow: -2px 0 10px rgba(0,0,0,0.7);
+            transition: 0.3s ease;
+            z-index: 2000;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        .sidebar.active {
+            right: 0; /* تظهر */
+        }
+        .sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #333;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+        .sidebar-header h3 {
+            color: #fff;
+            margin: 0;
+            font-family: 'Cairo', sans-serif;
+        }
+        .close-btn {
+            background: none;
+            border: none;
+            color: #ff4757;
+            font-size: 30px;
+            cursor: pointer;
+        }
+        .sidebar-list {
+            list-style: none;
+            padding: 0;
+        }
+        .sidebar-list li {
+            margin-bottom: 15px;
+        }
+        .sidebar-list a {
+            text-decoration: none;
+            color: #ddd;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: 0.2s;
+        }
+        .sidebar-list a:hover {
+            color: #00d2d3; /* اللون السيان بتاعك */
+            padding-right: 10px;
+        }
+
+        /* الـ Overlay (التعتيم) */
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1999;
+            backdrop-filter: blur(3px);
+        }
+        .overlay.active {
+            display: block;
+        }
+
+        /* سكشن ملفات القنوات */
+        .channel-files-section {
+            padding: 40px 20px;
+            background-color: #f9f9f9;
+            margin-top: 50px;
+            border-top: 5px solid #00d2d3;
+        }
+        .section-title {
+            text-align: center;
+            font-size: 2rem;
+            color: #333;
+            margin-bottom: 30px;
+            font-weight: 900;
+        }
+        .files-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .file-card {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border: 1px solid #eee;
+            transition: transform 0.3s;
+        }
+        .file-card:hover {
+            transform: translateY(-5px);
+            border-color: #00d2d3;
+        }
+        .file-icon {
+            font-size: 35px;
+            color: #00d2d3;
+        }
+        .file-info h4 { margin: 0 0 5px; color: #333; }
+        .file-info p { margin: 0; font-size: 14px; color: #666; }
+        .download-btn {
+            margin-right: auto;
+            background: #2ed573;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 14px;}
+
+
+
+            /* 1. القائمة الجانبية (مخفية افتراضياً) */
+.sidebar {
+    position: fixed; /* عشان تطفو فوق الموقع */
+    top: 0;
+    right: -300px; /* ده السر: مخفية بره الشاشة يمين */
+    width: 280px;
+    height: 100vh; /* بطول الشاشة */
+    background: linear-gradient(180deg, #1a1a1a 0%, #000 100%); /* لون فخم متدرج */
+    box-shadow: -5px 0 15px rgba(0,0,0,0.5); /* ضل عشان تبان بارزة */
+    transition: right 0.4s cubic-bezier(0.77, 0, 0.175, 1); /* حركة ناعمة جداً */
+    z-index: 10000; /* فوق كل حاجة */
+    padding: 20px;
+    overflow-y: auto;
+}
+
+/* 2. لما القائمة تشتغل (بنضيف الكلاس ده بالجافاسكريبت) */
+.sidebar.active {
+    right: 0 !important; /* ترجع تظهر */
+}
+
+/* 3. زرار الإغلاق جوه القائمة */
+.close-btn {
+    background: none;
+    border: none;
+    color: #ff4757;
+    font-size: 28px;
+    cursor: pointer;
+    float: left; /* يروح شمال */
+    transition: 0.3s;
+}
+.close-btn:hover {
+    transform: rotate(90deg); /* حركة دوران عند اللمس */
+}
+
+/* 4. تنسيق اللينكات جوه القائمة */
+.sidebar-list {
+    list-style: none;
+    padding: 0;
+    margin-top: 40px;
+}
+.sidebar-list li {
+    margin-bottom: 5px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.sidebar-list a {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    color: #ddd;
+    text-decoration: none;
+    padding: 15px 10px;
+    font-size: 16px;
+    transition: 0.3s;
+}
+.sidebar-list a:hover {
+    background: rgba(0, 210, 211, 0.1); /* لون سيان خفيف */
+    color: #00d2d3;
+    padding-right: 20px; /* حركة بسيطة لليمين */
+}
+
+/* 5. الخلفية المعتمة (Overlay) */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.7); /* لون أسود شفاف */
+    backdrop-filter: blur(5px); /* تأثير ضبابي (Blur) احترافي */
+    z-index: 9999; /* تحت القائمة بس فوق الموقع */
+    display: none; /* مخفية */
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+.overlay.active {
+    display: block;
+    opacity: 1;
+}
+
+        /* ================================================= */
+/* تنسيقات الفوتر والروابط الرئيسية         */
+/* ================================================= */
+
+/* تقسيم الفوتر إلى جزأين يمين ويسار على الشاشات الكبيرة */
+.footer-content {
+    /* هنا نستخدم Flexbox لتقسيم النبذة عن الروابط */
+    display: flex;
+    justify-content: space-between;
+    max-width: 1200px;
+    margin: 0 auto;
+    gap: 40px;
+}
+
+/* تنسيق عام لروابط الفوتر */
+.footer-links a {
+    color: #ddd; 
+    text-decoration: none; 
+    display: block; 
+    padding: 5px 0;
+    transition: color 0.2s;
+}
+
+/* تأثير الـ Hover */
+.footer-links a:hover {
+    color: #00d2d3; /* لون النيون/التركواز */
+}
+
+/* تنسيق الـ MHD Sign (مطوّر بواسطة) */
+.footer-about p span {
+    color: #00d2d3; 
+    font-weight: bold;
+}
+
+/* ================================================= */
+/* استجابة التصميم على الموبايل (Mobile)       */
+/* ================================================= */
+
+@media (max-width: 768px) {
+    
+    /* تحويل الفوتر من جزأين (يمين ويسار) إلى عمود واحد */
+    .footer-content {
+        flex-direction: column;
+        gap: 30px !important;
+    }
+    
+    /* تجميع أعمدة الروابط (روابط سريعة وخدمات) عمودياً */
+    .footer-links-group {
+        flex-direction: column;
+        gap: 30px;
+        padding-left: 0 !important; /* لإلغاء أي حشو جانبي */
+    }
+    
+    /* (إذا كان هذا الكود في ملف style.css) يجب أن يتضمن هنا باقي تعديلات الـ Navbar و Product Cards التي تحتاجها للموبايل. */
+}

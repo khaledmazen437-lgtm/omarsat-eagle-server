@@ -194,3 +194,12 @@ JAZZMIN_UI_TWEAKS = {
         "success": "btn-success"
     }
 }
+
+# في ملف settings.py
+
+# 1. للسماح بالتضمين الآمن:
+X_FRAME_OPTIONS = 'SAMEORIGIN'
+
+# 2. لتشغيل iframes بشكل عام، نحتاج لتعريف نطاقات آمنة (إذا كنت تستخدم مكتبة خارجية)
+# إذا كنت تستخدم Django الأساسي، هذا الكود غير مطلوب عادة، لكن يضمن الأمان:
+SECURE_REFERRER_POLICY = "strict-origin-when-cross-origin"

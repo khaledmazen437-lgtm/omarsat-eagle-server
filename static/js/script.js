@@ -110,3 +110,42 @@ function openTab(tabName, btn) {
     document.getElementById(tabName).style.display = 'block';
     // ...
 }
+
+
+
+/* كود فتح وإغلاق القائمة الجانبية (Sidebar)
+   بيشتغل لما تدوس على زرار الهامبرجر أو زرار الإغلاق أو الخلفية الشفافة
+*/
+function toggleMenu() {
+    // 1. يمسك عنصر القائمة الجانبية
+    const sidebar = document.getElementById('sidebarMenu');
+    
+    // 2. يمسك عنصر الخلفية المعتمة (Overlay)
+    const overlay = document.getElementById('overlay');
+    
+    // 3. يبدل الكلاس 'active' (لو موجود يشيله، ولو مش موجود يحطه)
+    if (sidebar && overlay) {
+        sidebar.classList.toggle('active');
+        overlay.classList.toggle('active');
+    } else {
+        console.error("العناصر sidebarMenu أو overlay غير موجودة في الصفحة!");
+    }
+}
+
+/* كود القائمة العائمة (لو لسه بتستخدمها في الدعم الفني مثلاً)
+*/
+function toggleFloatMenu() {
+    const floatMenu = document.getElementById('floatMenu');
+    if (floatMenu) {
+        floatMenu.classList.toggle('active');
+    }
+}
+
+function toggleMenu() {
+    const sidebar = document.getElementById('sidebarMenu');
+    const overlay = document.getElementById('overlay');
+    
+    // بيبدل الكلاس active (لو موجود يشيله ولو مش موجود يحطه)
+    sidebar.classList.toggle('active');
+    overlay.classList.toggle('active');
+}

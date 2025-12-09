@@ -7,9 +7,11 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.models import User
 from decimal import Decimal 
 from datetime import date, timedelta 
+from urllib.parse import quote 
+from .models import Product, Review, Order, OrderItem, Cart, CartItem, ChannelFile, Wishlist, HomeBanner, TutorialVideo
 
-# موديلات التطبيق الحالي
-from .models import Product, Review, Order, OrderItem, Cart, CartItem 
+# ✅ استيراد الموديلات الكاملة
+from .models import Product, Review, Order, OrderItem, Cart, CartItem, ChannelFile, Wishlist, HomeBanner
 # موديلات التطبيقات الخارجية
 from eagle_server.models import ServerPlan, ServerNews, ServerReport
 
@@ -41,19 +43,70 @@ def get_user_cart_items(request):
 # ===============================================
 
 def home_view(request):
-    return render(request, 'index.html')
+    try:
+        active_banners = HomeBanner.objects.filter(is_active=True).order_by('ordering')
+    except:
+        active_banners = []
+        
+    context = {
+        'banners': active_banners 
+    }
+    return render(request, 'index.html', context)
 
+# -----------------------------------------------
+# دالة المتجر الرئيسية (تم إزالة جلب ملفات القنوات منها)
+# -----------------------------------------------
 def store_view(request):
     products = Product.objects.all()
-    return render(request, 'store.html', {'products': products})
+    
+    try:
+        active_banners = HomeBanner.objects.filter(is_active=True).order_by('ordering')
+        # ❌ تم إزالة جلب channel_files من هنا
+    except:
+        active_banners = []
+        # channel_files = [] ❌ تم إزالة جلب channel_files من هنا
+
+    category_id = request.GET.get('category')
+    
+    if category_id:
+        products = products.filter(category__icontains=category_id)
+
+    context = {
+        'products': products,
+        # 'channel_files': channel_files, ❌ لم تعد تُرسل هنا
+        'banners': active_banners,
+    }
+    
+    return render(request, 'store.html', context)
+
+# ✅ دالة مركز ملفات القنوات الجديد (ستُجلب الملفات من هنا)
+def channel_files_center_view(request):
+    try:
+        # جلب جميع ملفات القنوات وعرضها في الصفحة الجديدة
+        all_channel_files = ChannelFile.objects.all().order_by('-date_added')
+    except:
+        all_channel_files = []
+        
+    context = {
+        'channel_files': all_channel_files,
+        'page_title': 'مركز ملفات القنوات والسوفت وير'
+    }
+    # 🛑 تحتاج لإنشاء هذا القالب: channel_files_center.html
+    return render(request, 'channel_files_center.html', context)
+    
+# -----------------------------------------------
+
+def discounts_view(request):
+    discounted_products = Product.objects.filter(discount_price__isnull=False).order_by('name')
+    
+    context = {'products': discounted_products, 'page_title': 'منتجات عليها خصم'}
+    return render(request, 'store.html', context)
 
 def server_view(request):
     iptv_plans = ServerPlan.objects.filter(server_type='iptv')
     cccam_plans = ServerPlan.objects.filter(server_type='cccam')
     
-    # جلب التقارير من الموديل الصحيح
     working_packages = ServerReport.objects.all().order_by('name')
-    
     latest_news = ServerNews.objects.all().order_by('-date_posted')
     
     return render(request, 'server.html', {
@@ -67,11 +120,14 @@ def product_details(request, id):
     product = get_object_or_404(Product, id=id)
     return render(request, 'product_details.html', {'product': product})
 
+def channel_file_details(request, id):
+    file = get_object_or_404(ChannelFile, id=id)
+    return render(request, 'channel_file_details.html', {'file': file})
+
 
 # ===============================================
 # 3. دوال السلة (Cart Logic)
 # ===============================================
-
 def add_to_cart(request, product_id):
     product = get_object_or_404(Product, id=product_id)
     current_user = request.user
@@ -162,7 +218,7 @@ def cart_view(request):
     total_shipping = Decimal('0.00')
     
     for cart_item in cart_items:
-        price = Decimal(cart_item.product.price) 
+        price = Decimal(cart_item.product.discount_price if cart_item.product.discount_price else cart_item.product.price)
         shipping = Decimal(cart_item.product.shipping_fee)
         
         total += price * cart_item.quantity
@@ -182,32 +238,26 @@ def cart_view(request):
 
 
 # ===============================================
-# 4. دوال الدفع والـ Checkout (المنطق الحاسم)
+# 4. دوال الدفع والـ Checkout (المحدثة لتوافق WhatsApp)
 # ===============================================
 
 def checkout(request):
     cart_items = get_user_cart_items(request)
     
-    # 1. التحقق إن السلة مش فاضية
     if not cart_items or len(cart_items) == 0:
         messages.warning(request, "السلة فارغة يا صديقي! ضيف منتجات الأول 🛒")
         return redirect('store')
 
-    # 🛑 2. التحقق من تسجيل الدخول (Smart Redirect Logic) 🛑
     if not request.user.is_authenticated:
         messages.error(request, "يجب تسجيل الدخول لإتمام الطلب.")
-        # بنقوله: روح Login وخد معاك رابط الـ checkout في شنطتك (next)
         return redirect(f'/login/?next={request.path}')
 
-    # 3. حساب المجاميع
-    total = sum(Decimal(item.product.price) * item.quantity for item in cart_items)
+    total = sum(Decimal(item.product.discount_price if item.product.discount_price else item.product.price) * item.quantity for item in cart_items)
     shipping_fee = sum(Decimal(item.product.shipping_fee) * item.quantity for item in cart_items)
     tax = Decimal('0.00')
     grand_total = total + shipping_fee + tax
 
-    # 4. معالجة زر "تأكيد الطلب" (POST Request)
     if request.method == 'POST':
-        # استلام البيانات
         full_name = request.POST.get('full_name')
         phone = request.POST.get('phone')
         address_input = request.POST.get('address')
@@ -216,7 +266,6 @@ def checkout(request):
         payment_screenshot = request.FILES.get('receiptImage')
 
         try:
-            # إنشاء الطلب (المستخدم مضمون إنه موجود الآن)
             new_order = Order.objects.create(
                 user=request.user, 
                 full_name=full_name,
@@ -228,7 +277,6 @@ def checkout(request):
                 ip_address=request.META.get('REMOTE_ADDR')
             )
 
-            # منطق اشتراكات السيرفر
             is_subscription = False
             for item in cart_items:
                 if hasattr(item.product, 'is_subscription') and item.product.is_subscription:
@@ -240,28 +288,56 @@ def checkout(request):
                 new_order.expiry_date = date.today() + timedelta(days=365)
                 new_order.save()
 
-            # نقل المنتجات
             for item in cart_items:
                 OrderItem.objects.create(
                     order=new_order,
                     product=item.product,
                     quantity=item.quantity,
-                    product_price=item.product.price,
+                    product_price=item.product.discount_price if item.product.discount_price else item.product.price,
                     user=request.user
                 )
 
-            # تنظيف السلة
             cart_items.delete()
 
-            messages.success(request, "تم استلام طلبك بنجاح! سيتم مراجعته قريباً.")
-            return redirect('profile') # يروح يشوف طلبه
+            # --- توليد رابط واتساب للإشعار (WhatsApp Notification) ---
+            payment_method_name = dict(Order.PAYMENT_METHODS).get(payment_method, payment_method)
+            
+            # 1. تجهيز رابط الصورة المرفوعة
+            screenshot_link = ""
+            if new_order.payment_screenshot:
+                screenshot_link = f"\n\n*اضغط هنا لرؤية صورة الإثبات فوراً:*\n{request.build_absolute_uri(new_order.payment_screenshot.url)}" 
+            
+            # 2. بناء الرسالة بالنص المطلوب
+            wa_message = (
+                f"✅ طلب جديد رقم #{new_order.id}\n"
+                f"--------------------------\n"
+                f"👤 العميل: {full_name}\n"
+                f"📞 الهاتف: {phone}\n"
+                f"💰 الإجمالي: {grand_total} ج.م\n"
+                f"💳 طريقة الدفع: {payment_method_name}\n"
+                f"--------------------------\n"
+                f"🛑 رجاء مراجعة الطلب رقم {new_order.id} 🛑\n" 
+                f"لتأكيد استلام المبلغ المُحول.\n"
+                f"{screenshot_link}"
+            )
+            
+            # 🛑🛑 رقم الواتساب الخاص بالمسؤول (يجب التأكد من صحة هذا هذا الرقم) 🛑🛑
+            ADMIN_WA_NUMBER = "+201011058982" 
+            
+            encoded_message = quote(wa_message)
+            wa_url = f"https://wa.me/{ADMIN_WA_NUMBER}?text={encoded_message}"
+            
+            request.session['wa_redirect_url'] = wa_url
+            # --- نهاية توليد رابط واتساب ---
+            
+            messages.success(request, "تم استلام طلبك بنجاح! سيتم تحويلك إلى الواتساب لتأكيد الإشعار.")
+            return redirect('profile')
 
         except Exception as e:
             print(f"❌ خطأ قاتل عند حفظ الطلب: {e}")
             messages.error(request, f"حدث خطأ أثناء حفظ الطلب. (السبب: {e})")
             return redirect('checkout')
 
-    # 5. عرض الصفحة (GET Request)
     context = {
         'cart_items': cart_items,
         'total': total,
@@ -270,7 +346,36 @@ def checkout(request):
         'grand_total': grand_total,
     }
     return render(request, 'checkout.html', context)
-# 5. دوال المصادقة والبروفايل والتقييم والبحث
+
+
+# ===============================================
+# 5. دوال المفضلة (Wishlist)
+# ===============================================
+
+@login_required
+def wishlist_view(request):
+    wishlist_items = Wishlist.objects.filter(user=request.user).select_related('product')
+    
+    context = {'wishlist_items': wishlist_items}
+    return render(request, 'wishlist.html', context)
+
+@login_required
+def add_to_wishlist(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+    
+    wishlist_item, created = Wishlist.objects.get_or_create(user=request.user, product=product)
+
+    if not created:
+        wishlist_item.delete()
+        messages.success(request, f'{product.name} تم إزالته من المفضلة.')
+    else:
+        messages.success(request, f'{product.name} تمت إضافته إلى المفضلة.')
+    
+    return redirect(request.META.get('HTTP_REFERER', 'store'))
+
+
+# ===============================================
+# 6. دوال المصادقة والبروفايل والبحث
 # ===============================================
 
 def signup_view(request):
@@ -299,8 +404,8 @@ def signup_view(request):
         return redirect('login')
 
     return render(request, 'register.html')
+
 def login_view(request):
-    # بنشوف هل فيه رابط عودة في العنوان (GET) أو في الفورم (POST)
     next_url = request.GET.get('next') or request.POST.get('next')
 
     if request.method == 'POST':
@@ -313,22 +418,26 @@ def login_view(request):
             login(request, user) 
             messages.success(request, f"مرحباً بك مجدداً يا {username}!") 
             
-            # 🛑 هنا الذكاء: التوجيه حسب الحالة 🛑
             if next_url:
-                return redirect(next_url) # يرجع checkout
+                return redirect(next_url) 
             else:
-                return redirect('home')   # يروح الرئيسية
+                return redirect('home') 
         else:
             messages.error(request, "اسم المستخدم أو كلمة المرور خطأ ❌") 
             
-    # بنبعت next للصفحة عشان تحطه في حقل مخفي
     return render(request, 'login.html', {'next': next_url})
+
 def logout_view(request):
     logout(request)
     return redirect('home')
 
 @login_required(login_url='login')
 def profile_view(request):
+    wa_redirect_url = request.session.pop('wa_redirect_url', None)
+    
+    if wa_redirect_url:
+        return redirect(wa_redirect_url)
+        
     user_orders = Order.objects.filter(user=request.user).order_by('-created_at')
     return render(request, 'profile.html', {'orders': user_orders})
 
@@ -380,14 +489,12 @@ def search_view(request):
             if word in query.lower():
                 target_codes.append(code)
 
-        # البحث في المنتجات
         products = Product.objects.filter(
             Q(name__icontains=query) | Q(description__icontains=query) |
             Q(category__icontains=query) |
             Q(category__in=target_codes) 
         ).distinct()
 
-        # البحث في السيرفرات
         all_plans = ServerPlan.objects.filter(
             Q(name__icontains=query) | Q(features__icontains=query) |
             Q(server_type__icontains=query)
@@ -404,3 +511,25 @@ def search_view(request):
     }
     
     return render(request, 'search_results.html', context)
+
+
+# في ملف store/views.py
+# ... (بعد دالة channel_files_center_view)
+
+# ✅ دالة صفحة الشروحات والفيديوهات
+def tutorials_view(request):
+    # تأكد من استيراد TutorialVideo في بداية الملف (from .models import ..., TutorialVideo)
+    try:
+        videos = TutorialVideo.objects.filter(is_active=True).order_by('-date_added')
+    except NameError:
+        # إذا لم يتم استيراد TutorialVideo في بداية الملف، سيعطي خطأ
+        # لكن لو تم الاستيراد، سيتم تجاهل هذا الجزء
+        videos = []
+    
+    context = {
+        'videos': videos,
+        'page_title': 'شروحات وتطبيقات بالفيديو'
+    }
+    # 🛑 هذه الدالة تعتمد على وجود قالب 'tutorials.html'
+    return render(request, 'tutorials.html', context)
+    

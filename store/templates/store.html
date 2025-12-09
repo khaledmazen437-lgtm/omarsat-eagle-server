@@ -8,8 +8,268 @@
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;700;900&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
+
+    <style>
+        /* تنسيق زرار الهامبرجر */
+        .hamburger-btn {
+            background: transparent;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            font-size: 22px;
+            cursor: pointer;
+            padding: 5px 12px;
+            border-radius: 5px;
+            margin-left: 15px;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .hamburger-btn:hover {
+            border-color: #00d2d3;
+            color: #00d2d3;
+        }
+
+        /* تنسيق القائمة الجانبية */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            right: -300px;
+            width: 280px;
+            height: 100vh;
+            background: #1a1a1a;
+            z-index: 9999;
+            transition: right 0.4s ease;
+            padding: 20px;
+            box-shadow: -5px 0 15px rgba(0,0,0,0.5);
+            overflow-y: auto;
+        }
+        .sidebar.active {
+            right: 0 !important;
+        }
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 9998;
+            display: none;
+        }
+        .overlay.active {
+            display: block;
+        }
+        
+        /* تنسيق روابط القائمة */
+        .sidebar-list { list-style: none; padding: 0; margin-top: 20px; }
+        .sidebar-list li { margin-bottom: 10px; border-bottom: 1px solid #333; }
+        .sidebar-list a { 
+            color: #ddd; text-decoration: none; font-size: 18px; display: block; padding: 10px; 
+            display: flex; align-items: center; gap: 10px;
+        }
+        .sidebar-list a:hover { color: #00d2d3; padding-right: 15px; transition: 0.3s; }
+        .close-btn { background: none; border: none; color: #ff4757; font-size: 28px; cursor: pointer; float: left; }
+
+        /* ================================================= */
+        /* 1. التنسيقات المشتركة (Tablet and Mobile)         */
+        /* ================================================= */
+
+        @media (max-width: 768px) {
+            
+            /* 🛑 FIX 1: تعديل هيكل الـ Navbar بالكامل ليتناسب عمودياً 🛑 */
+            .navbar {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 10px;
+            }
+
+            /* تجميع اللوجو وزر الهمبرجر */
+            .nav-right {
+                width: 100%; 
+                justify-content: space-between; 
+                margin-bottom: 10px;
+            }
+            
+            /* تجميع ايقونات البحث والدخول */
+            .nav-icons {
+                width: 100%;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 10px;
+            }
+
+            /* إخفاء شريط التنقل الأفقي */
+            .nav-links {
+                display: none !important;
+            }
+
+            /* تنسيق شريط البحث */
+            .search-bar-styled {
+                flex-grow: 1; 
+                margin-left: 10px;
+            }
+            .search-bar-styled input {
+                width: 100%; 
+            }
+
+
+            /* باقي التعديلات الخاصة بالمنتجات والصفحات (محتفظ بها كما هي) */
+
+            .page-header {
+                margin-top: 20px !important;
+                padding: 0 10px;
+            }
+            .page-header h1 {
+                font-size: 2.2rem !important;
+            }
+
+            .products-container {
+                display: flex; 
+                flex-direction: column;
+                align-items: center;
+                padding: 0 10px;
+            }
+
+            .product-card {
+                width: 95% !important; 
+                margin: 15px auto !important;
+                padding: 10px !important;
+                flex-direction: column; 
+            }
+
+            /* تم إزالة القسم القديم لملفات القنوات من المتجر */
+            /* .channel-files-section > div {} */
+            
+            .banner-slider-container {
+                height: 350px !important; 
+            }
+        }
+
+        /* ================================================= */
+        /* 2. التنسيقات الخاصة بالهواتف الصغيرة جداً (Small Phones < 425px) */
+        /* ================================================= */
+        @media (max-width: 425px) {
+            
+            /* تنسيق الـ Navbar لضمان عدم التداخل */
+            .navbar {
+                padding: 10px 5px !important;
+            }
+
+            /* تنسيق شريط البحث لتقليل حجمه */
+            .search-bar-styled input {
+                width: 100%; 
+                font-size: 0.8rem;
+            }
+
+            /* تعديل حجم الخطوط لضمان المقروئية على الشاشات الصغيرة جداً */
+            .page-header h1 {
+                font-size: 1.8rem !important;
+            }
+            
+            /* ضبط ارتفاع البانر */
+            .banner-slider-container {
+                height: 300px !important; 
+            }
+
+            /* زرار التسوق العائم (جعله أصغر ومركزي) */
+            .banner-cta-float {
+                right: 50% !important; 
+                transform: translateX(50%) !important;
+                bottom: 15px; 
+                padding: 8px 15px;
+                font-size: 0.9rem;
+            }
+
+            /* تنسيق زرار الدخول/الخروج */
+            .nav-icons .btn-login {
+                padding: 8px 10px;
+                font-size: 0.8rem;
+            }
+        }
+        
+        /* ================================================= */
+        /* 3. ستايل البانر العام (Swiper)                     */
+        /* ================================================= */
+
+        .banner-slider-container { 
+            width: 100%;
+            height: 600px; 
+            overflow: hidden;
+            position: relative;
+            margin-bottom: 20px;
+        }
+        .banner-item {
+            width: 100%;
+            height: 100%;
+            background-size: contain; 
+            background-repeat: no-repeat; 
+            background-position: center; 
+            display: flex; 
+            align-items: flex-end; 
+            justify-content: center; 
+            position: relative; 
+        }
+        
+        /* ستايل زرار التسوق العائم */
+        .banner-cta-float {
+            position: absolute;
+            bottom: 50px; 
+            right: 50px; 
+            background: #00d2d3; 
+            color: #000;
+            padding: 15px 35px;
+            font-weight: 900;
+            font-size: 1.1rem;
+            text-decoration: none;
+            border-radius: 5px;
+            box-shadow: 0 0 15px rgba(0, 210, 211, 0.8);
+            transition: 0.3s;
+            z-index: 10;
+        }
+        .banner-cta-float:hover {
+            background: #00cec9;
+            box-shadow: 0 0 20px rgba(0, 210, 211, 1);
+        }
+
+    </style>
 </head>
+
 <body class="store-body">
+
+    <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
+    
+    <div class="sidebar" id="sidebarMenu">
+        <div class="sidebar-header" style="overflow: hidden; padding-bottom: 10px;">
+            <h3 style="float: right; color: white; margin: 0;">الأقسام</h3>
+            <button class="close-btn" onclick="toggleMenu()">&times;</button>
+        </div>
+        
+        <ul class="sidebar-list">
+            <li><a href="{% url 'store' %}?category=receivers"><i class="fa fa-satellite-dish"></i> ريسيفرات</a></li>
+            <li><a href="{% url 'store' %}?category=lnb"><i class="fa fa-crosshairs"></i> عدسات LNB</a></li>
+            <li><a href="{% url 'store' %}?category=remotes"><i class="fa fa-mobile-alt"></i> ريموتات</a></li>
+            <li><a href="{% url 'store' %}?category=dish_acc"><i class="fa fa-tools"></i> اكسسوارات دش</a></li>
+            <li><a href="{% url 'store' %}?category=mobile_acc"><i class="fa fa-mobile"></i> اكسسوارات موبايل</a></li>
+            <li><a href="{% url 'store' %}?category=pc_acc"><i class="fa fa-laptop"></i> اكسسوارات كمبيوتر ولاب توب</a></li>
+            <li><a href="{% url 'store' %}?category=cctv"><i class="fa fa-video"></i> كاميرات مراقبة</a></li>
+            <li><a href="{% url 'store' %}?category=other_acc"><i class="fa fa-plug"></i> اكسسوارات اخري</a></li>
+            <li>
+                <a href="{% url 'tutorials' %}" onclick="toggleMenu()" style="color: #ffc107;">
+                    <i class="fa fa-video"></i> شروحات وتطبيقات
+                </a>
+            </li>
+            
+            <li style="margin-top: 20px; border-top: 1px solid #333;">
+                <a href="{% url 'channel_files_center' %}" style="color: #00d2d3;" onclick="toggleMenu()">
+                    <i class="fa fa-download"></i> مركز ملفات القنوات والسوفت وير
+                </a>
+            </li>
+        </ul>
+    </div>
 
     <div class="top-bar-mhd">
         <div class="ticker-wrap">
@@ -21,42 +281,73 @@
         </div>
     </div>
 
-    <nav class="navbar">
-        <div class="logo">
-            <a href="{% url 'home' %}">omar sat.<span class="neon-text">Store</span></a>
+    <nav class="navbar" style="display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; background-color: #000;">
+        
+        <div class="nav-right" style="display: flex; align-items: center;">
+            <button class="hamburger-btn" onclick="toggleMenu()">
+                <i class="fa fa-bars"></i>
+            </button>
+
+            <div class="logo" style="margin-right: 15px;">
+                <a href="{% url 'home' %}">omar sat.<span class="neon-text">Store</span></a>
+            </div>
         </div>
         
         <ul class="nav-links">
             <li><a href="{% url 'home' %}">الرئيسية</a></li>
             <li><a href="{% url 'store' %}" class="active">المتجر</a></li>
             <li><a href="{% url 'server' %}">السيرفر</a></li>
+            
+            <li><a href="{% url 'discounts' %}" style="color: #ffc107; font-weight: bold;"><i class="fa fa-percent"></i> خصومات</a></li>
+            <li><a href="{% url 'wishlist' %}" style="color: #ff4757;"><i class="fa fa-heart"></i> المفضلة</a></li>
         </ul>
 
         <div class="nav-icons">
              <div class="search-bar-styled">
                 <form action="{% url 'search' %}" method="GET">
-                    <input type="text" name="q" placeholder="ابحث عن منتج..." value="{{ request.GET.q }}">
+                    <input type="text" name="q" placeholder="بحث..." value="{{ request.GET.q }}">
                     <button type="submit"><i class="fa fa-search"></i></button>
                 </form>
             </div>
             {% if user.is_authenticated %}
                 <span style="color: white; font-size: 0.9rem; margin-left: 5px;">{{ user.username }}</span>
-                
             {% else %}
                 <a href="{% url 'login' %}" class="btn-login">دخول</a>
                 <a href="{% url 'profile' %}" style="color: white; margin: 0 10px;">حسابى</a>
-                     
             {% endif %}
-            
             <a href="{% url 'cart' %}" class="cart-icon"><i class="fa fa-shopping-cart"></i></a>
         </div>
     </nav>
-
-    <div class="page-header" style="margin-top: 60px;">
-        <h1>أحدث <span class="neon-text">المنتجات</span></h1>
-        <p>تكنولوجيا المستقبل بين يديك</p>
     
-           
+    <div class="swiper-container banner-slider-container container">
+        <div class="swiper-wrapper">
+        {% for banner in banners %}
+        <div class="swiper-slide banner-item" style="background-image: url('{{ banner.image.url }}');">
+            
+            {% if banner.link %}
+            <a href="{{ banner.link }}" class="banner-cta-float">
+                تسوق الآن <i class="fa fa-arrow-left"></i>
+            </a>
+            {% endif %}
+            
+        </div>
+        {% empty %}
+        <div class="swiper-slide banner-item" style="background-color: #333;">
+            <a href="{% url 'store' %}" class="banner-cta-float" style="right: 50%; transform: translateX(50%);">
+                ابدأ التصفح <i class="fa fa-arrow-left"></i>
+            </a>
+        </div>
+        {% endfor %}
+        </div>
+        
+        <div class="swiper-pagination"></div>
+        <div class="swiper-button-next" style="color: #00d2d3;"></div>
+        <div class="swiper-button-prev" style="color: #00d2d3;"></div>
+    </div>
+    <div class="page-header" style="margin-top: 60px;">
+        <h1>{{ page_title|default:"أحدث المنتجات"|safe }}</h1>
+        <p>تكنولوجيا المستقبل بين يديك</p>
+    </div>
 
     <div class="products-container">
         {% for product in products %}
@@ -72,8 +363,20 @@
             </div>
             <div class="card-info">
                 <h3>{{ product.name }}</h3>
-                <span class="price">{{ product.price }} ج.م</span>
-                <a href="{% url 'add_to_cart' product.id %}" class="add-btn">أضف للسلة 🛒</a>
+                
+                {% if product.discount_price %}
+                    <span class="price" style="text-decoration: line-through; color: #777; font-size: 0.9em;">{{ product.price }} ج.م</span>
+                    <span class="price" style="color: #ffc107; font-size: 1.2em; font-weight: bold;">{{ product.discount_price }} ج.م</span>
+                {% else %}
+                    <span class="price">{{ product.price }} ج.م</span>
+                {% endif %}
+
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
+                    <a href="{% url 'add_to_cart' product.id %}" class="add-btn" style="flex-grow: 1; margin-left: 5px;">أضف للسلة 🛒</a>
+                    <a href="{% url 'add_to_wishlist' product.id %}" style="color: #ff4757; border: 1px solid #ff4757; border-radius: 5px; padding: 10px 15px; text-decoration: none; font-size: 1.1em; line-height: 1;">
+                        <i class="fa fa-heart"></i>
+                    </a>
+                </div>
             </div>
         </div>
         {% empty %}
@@ -87,11 +390,43 @@
         }
     </script>
     <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-    <script src="{% static 'js/script.js' %}"></script>
-<script>
-        function toggleFloatMenu() {
-            document.getElementById('floatMenu').classList.toggle('active');
+
+    <script>
+        function toggleMenu() {
+            const sidebar = document.getElementById('sidebarMenu');
+            const overlay = document.getElementById('overlay');
+            
+            if (sidebar && overlay) {
+                sidebar.classList.toggle('active');
+                overlay.classList.toggle('active');
+            } else {
+                console.error("العناصر sidebarMenu أو overlay غير موجودة!");
+            }
         }
+
+        // ❌ تم إزالة كود التحكم في ظهور قسم ملفات القنوات القديم بالهاش (#channel-files)
+
+    </script>
+
+    <script src="{% static 'js/script.js' %}" async></script>
+    
+    <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+    <script>
+        var swiper = new Swiper('.banner-slider-container', {
+            loop: true,
+            autoplay: {
+                delay: 4000, // 4 ثواني
+                disableOnInteraction: false,
+            },
+            pagination: {
+                el: '.swiper-pagination',
+                clickable: true,
+            },
+            navigation: {
+                nextEl: '.swiper-button-next',
+                prevEl: '.swiper-button-prev',
+            },
+        });
     </script>
 </body>
 </html>
