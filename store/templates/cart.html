@@ -37,7 +37,7 @@
     </div>
 
     <div class="container cart-container">
-        
+
         <div class="cart-items">
             <table>
                 <thead>
@@ -67,15 +67,15 @@
                             {% else %}
                                 <img src="{% static 'images/no-image.png' %}" alt="No Image">
                             {% endif %}
-                            
+
                             <div>
                                 <p>{{ item.product.name }}</p>
                                 <small>القسم: {{ item.product.get_category_display }}</small>
                             </div>
                         </td>
-                        
+
                         <td>{{ item.product.price }} ج.م</td>
-                        
+
                         <td class="quantity-cell">
                             <div class="quantity-control d-flex align-items-center">
                                 <a href="{% url 'decrease_quantity' product_id=item.product.id %}" class="btn-qty btn-minus">-</a>
@@ -83,9 +83,9 @@
                                 <a href="{% url 'increase_quantity' product_id=item.product.id %}" class="btn-qty btn-plus">+</a>
                             </div>
                         </td>
-                        
+
                         <td class="item-total">{{ item.sub_total|floatformat:2 }} ج.م</td>
-                        
+
                         <td>
                                                         <a href="{% url 'remove_from_cart' product_id=item.product.id %}" class="remove-btn">
                                 ❌
@@ -101,7 +101,7 @@
             <h3>ملخص الطلب 🧾</h3>
             <div class="summary-row">
                 <span>المجموع الفرعي</span>
-                <span>{{ subtotal|floatformat:2 }} ج.م</span> 
+                <span>{{ subtotal|floatformat:2 }} ج.م</span>
             </div>
             <div class="summary-row">
                 <span>الشحن</span>
@@ -112,9 +112,9 @@
                 <span>الإجمالي</span>
                 <span class="neon-text">{{ grand_total|floatformat:2 }} ج.م</span>
             </div>
-            
+
             <a href="{% url 'checkout' %}" class="checkout-btn">
- إتمام الشراء والدفع 
+ إتمام الشراء والدفع
  </a>
         </div>
 

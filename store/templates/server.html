@@ -35,17 +35,15 @@
     </div>
 
     <div class="container server-layout-grid">
-        
-        
+
         <div class="main-content-area">
-            
+
             <div class="server-tabs">
                 <button class="tab-btn active" id="iptv-btn" onclick="openTab('iptv', this)">IPTV</button>
                 <button class="tab-btn" id="cccam-btn" onclick="openTab('cccam', this)">Sharing</button>
                 <button class="tab-btn" id="working-btn" onclick="openTab('working', this)">الباقات العاملة</button>
             </div>
-  
-           
+
             <div id="iptv" class="tab-content">
                 <div class="pricing-container">
                     {% for plan in iptv_plans %}
@@ -61,8 +59,8 @@
                             <li>⏳ المدة: {{ plan.duration }} شهور</li>
                             {% if plan.features %}<li style="white-space: pre-line;">{{ plan.features|linebreaks }}</li>{% endif %}
                         </ul>
-                        <a href="https://wa.me/+201011058982?text=السلام عليكم، محتاج أشترك في باقة ({{ plan.name }}) بسعر {{ plan.price }} جنيه" 
-                           class="plan-btn" 
+                        <a href="https://wa.me/+201011058982?text=السلام عليكم، محتاج أشترك في باقة ({{ plan.name }}) بسعر {{ plan.price }} جنيه"
+                           class="plan-btn"
                            target="_blank">
                            <i class="fa-brands fa-whatsapp"></i> اشترك الآن
                         </a>
@@ -88,8 +86,8 @@
                             {% if plan.features %}<li style="white-space: pre-line;">{{ plan.features|linebreaks }}</li>{% endif %}
                         </ul>
 
-                        <a href="https://wa.me/+201011058982?text=السلام عليكم، محتاج أشترك في باقة الشيرنج ({{ plan.name }}) بسعر {{ plan.price }} جنيه" 
-                           class="plan-btn" 
+                        <a href="https://wa.me/+201011058982?text=السلام عليكم، محتاج أشترك في باقة الشيرنج ({{ plan.name }}) بسعر {{ plan.price }} جنيه"
+                           class="plan-btn"
                            style="border-color: #ff0055; color: #ff0055;"
                            target="_blank">
                            <i class="fa-brands fa-whatsapp"></i> اشترك الآن
@@ -99,20 +97,19 @@
                 </div>
             </div>
 
-
             <div id="working" class="tab-content" style="display: none;">
-                <div class="report-main-card"> 
+                <div class="report-main-card">
                     {% for report in working_packages %}
                     <div class="report-header">
                         {% if report.image %}
                             <img src="{{ report.image.url }}" alt="{{ report.name }}" class="report-image-centered">
                         {% endif %}
                         <h3 style="color: var(--neon-orange);">{{ report.name }}</h3>
-                        <div class="report-status-badge {{ report.status|lower }}"> 
+                        <div class="report-status-badge {{ report.status|lower }}">
                             {{ report.status }}
-                        </div> 
+                        </div>
                     </div>
-                    
+
                     <div class="report-details">
                         <p class="last-update">🗓️ آخر تحديث: {{ report.last_updated|date:"Y-m-d H:i" }}</p>
                         {% if report.report_details %}
@@ -121,8 +118,8 @@
                             </div>
                         {% endif %}
                     </div>
-                    
-                    <a href="#" class="report-btn" 
+
+                    <a href="#" class="report-btn"
                        style="background: var(--neon-blue); color: white; border: none;"
                        onclick="alert('تقرير حالة الخادم: {{ report.name }}')">
                        <i class="fa fa-chart-line"></i> عرض التقرير
@@ -130,18 +127,18 @@
                     {% endfor %}
                 </div>
                 </div>
-            
+
         </div> </div> <script>
         function openTab(tabName, btn) {
             var iptvContent = document.getElementById('iptv');
             var cccamContent = document.getElementById('cccam');
             var workingContent = document.getElementById('working');
-            
+
             if (iptvContent && cccamContent && workingContent) {
                 iptvContent.style.display = 'none';
                 cccamContent.style.display = 'none';
-                workingContent.style.display = 'none'; 
-                
+                workingContent.style.display = 'none';
+
                 document.getElementById(tabName).style.display = 'block';
             }
 
@@ -161,7 +158,6 @@
             document.getElementById('floatMenu').classList.toggle('active');
         }
     </script>
-    
 
 </body>
 </html>

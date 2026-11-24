@@ -90,12 +90,11 @@
             }
         }
 
-        /* ✅ CSS خاص بشريط التنقل (لضمان عمله هنا) */
         .navbar {
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            padding: 10px 20px; 
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
             background-color: #000;
         }
         .nav-links {
@@ -118,7 +117,7 @@
         <div class="nav-right" style="display: flex; align-items: center;">
             <button class="hamburger-btn" style="visibility: hidden;">
                  <i class="fa fa-bars"></i>
-            </button> 
+            </button>
             <div class="logo" style="margin-right: 15px;">
                 <a href="{% url 'home' %}" style="color: white; text-decoration: none; font-size: 1.2rem;">omar sat.<span style="color: #00d2d3;">Store</span></a>
             </div>
@@ -168,7 +167,7 @@
                     </div>
                     <div class="item-details">
                         <h4><a href="{% url 'product_details' item.product.id %}" style="color: #00d2d3; text-decoration: none;">{{ item.product.name }}</a></h4>
-                        
+
                         {% if item.product.discount_price %}
                             <p style="color: #ddd;">السعر: <span style="text-decoration: line-through; color: #777;">{{ item.product.price }} ج.م</span> <span style="color: #ffc107; font-weight: bold;">{{ item.product.discount_price }} ج.م</span></p>
                         {% else %}

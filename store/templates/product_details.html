@@ -29,7 +29,7 @@
     </nav>
 
     <div class="details-container"></div>
-        
+
         <div class="breadcrumb">
             <a href="{% url 'store' %}">المتجر</a> > <span>{{ product.name }}</span>
         </div>
@@ -38,9 +38,9 @@
             <div class="product-text">
                 <h1 class="p-title">{{ product.name }}</h1>
                 <div class="p-category">القسم: {{ product.get_category_display }}</div>
-                
+
                 <div class="p-price">{{ product.price }} ج.م</div>
-                
+
                 <p class="p-desc">
                     {{ product.description|linebreaks }}
                 </p>
@@ -67,7 +67,7 @@
         {% if product.processor or product.ram %}
         <div class="specs-container">
             <h2 class="section-title">المواصفات <span class="neon-text">الفنية</span></h2>
-            
+
             <div class="specs-grid">
                 <div class="specs-table-box">
                     <table class="specs-table">
@@ -77,7 +77,7 @@
                             <td>{{ product.processor }}</td>
                         </tr>
                         {% endif %}
-                        
+
                         {% if product.ram %}
                         <tr>
                             <th>الرامات</th>
@@ -117,7 +117,7 @@
 
         <div class="reviews-container">
             <h2 class="section-title">تقييمات <span class="neon-text">العملاء</span></h2>
-            
+
             <div class="reviews-list">
                 {% if product.reviews.all %}
                     {% for review in product.reviews.all %}
@@ -144,24 +144,24 @@
             <div class="add-review-box">
                 {% if user.is_authenticated %}
                     <h3>أضف تقييمك يا {{ user.username }}</h3>
-                    
+
                     <form action="{% url 'add_review' product.id %}" method="POST">
                         {% csrf_token %}
-                        
+
                         <div class="rating-css">
                             <div class="star-icon">
                                 <input type="radio" name="rating" id="rating5" value="5">
                                 <label for="rating5" class="fa fa-star">★</label>
-                                
+
                                 <input type="radio" name="rating" id="rating4" value="4">
                                 <label for="rating4" class="fa fa-star">★</label>
-                                
+
                                 <input type="radio" name="rating" id="rating3" value="3">
                                 <label for="rating3" class="fa fa-star">★</label>
-                                
+
                                 <input type="radio" name="rating" id="rating2" value="2">
                                 <label for="rating2" class="fa fa-star">★</label>
-                                
+
                                 <input type="radio" name="rating" id="rating1" value="1">
                                 <label for="rating1" class="fa fa-star">★</label>
                             </div>
@@ -173,7 +173,7 @@
                 {% else %}
     <div style="text-align: center; padding: 20px;">
         <p>يجب عليك تسجيل الدخول لتتمكن من التقييم</p>
-        
+
         <a href="{% url 'login' %}?next={{ request.path }}" class="btn-login" style="display: inline-block; margin-top: 10px;">
             تسجيل الدخول
         </a>

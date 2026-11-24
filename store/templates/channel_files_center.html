@@ -8,9 +8,9 @@
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;700;900&display=swap" rel="stylesheet">
-    
+
     <style>
-        /* تنسيق زرار الهامبرجر */
+
         .hamburger-btn {
             background: transparent;
             border: 2px solid rgba(255, 255, 255, 0.2);
@@ -35,16 +35,16 @@
             position: fixed;
             top: 0;
             right: -300px;
-            width: 280px; 
-            max-width: 90vw; 
+            width: 280px;
+            max-width: 90vw;
             height: 100vh;
             background: #1a1a1a;
             z-index: 9999;
             transition: right 0.4s ease;
-            padding: 25px 20px; 
+            padding: 25px 20px;
             box-shadow: -5px 0 15px rgba(0,0,0,0.5);
             overflow-y: auto;
-            box-sizing: border-box; 
+            box-sizing: border-box;
         }
         .sidebar.active {
             right: 0 !important;
@@ -62,54 +62,45 @@
         .overlay.active {
             display: block;
         }
-        
-        /* تنسيق روابط القائمة */
-        .sidebar-list { list-style: none; padding: 0; margin-top: 25px; } 
-        .sidebar-list li { margin-bottom: 12px; border-bottom: 1px solid #333; } 
+
+        .sidebar-list { list-style: none; padding: 0; margin-top: 25px; }
+        .sidebar-list li { margin-bottom: 12px; border-bottom: 1px solid #333; }
         /* تعديل تصميم الروابط في القائمة الجانبية لتضمين روابط الحساب والسلة التي تم إخفاؤها من الشريط العلوي */
-        .sidebar-list a, .sidebar-list button { 
-            color: #ddd; text-decoration: none; font-size: 17px; display: block; padding: 10px 5px; 
+        .sidebar-list a, .sidebar-list button {
+            color: #ddd; text-decoration: none; font-size: 17px; display: block; padding: 10px 5px;
             display: flex; align-items: center; gap: 10px;
             background: none; border: none; cursor: pointer; width: 100%; text-align: right;
         }
         .sidebar-list a:hover { color: #00d2d3; padding-right: 15px; transition: 0.3s; }
         .close-btn { background: none; border: none; color: #ff4757; font-size: 28px; cursor: pointer; float: left; }
 
-        /* ================================================= */
-        /* 1. تنسيقات التجاوب القوية (768px وأقل) */
-        /* ================================================= */
-
         @media (max-width: 768px) {
-            
-            /* 🛑 FIX 1: إخفاء شريط الإعلانات المتحرك نهائياً (Top Ticker) */
+
             .top-bar-mhd {
                 display: none !important;
             }
-            
+
             /* FIX 2: تعديل هيكل الـ Navbar ليكون صف واحد ضيق ومرتب */
             .navbar {
                 flex-direction: row !important;
                 justify-content: space-between !important;
                 padding: 10px 15px;
-                min-height: 50px; 
+                min-height: 50px;
                 z-index: 100;
             }
 
-            /* إخفاء شريط البحث (Search Bar) */
             .search-bar-styled {
                 display: none !important;
             }
-            
-            /* 🛑 FIX 3: إخفاء أيقونات الدخول والسلة (Nav Icons) لتبقى فقط في القائمة الجانبية */
+
             .nav-icons {
                 display: none !important;
             }
-            
-            /* إخفاء شريط التنقل الأفقي (Horizontal Links) */
+
             .nav-links {
                 display: none !important;
             }
-            
+
             /* FIX 4: جعل اللوجو والهمبرجر يتوزعان بشكل نظيف في الصف العلوي */
             .nav-right {
                 width: 100%; /* اجعلها تأخذ العرض بالكامل لترتيب العناصر */
@@ -118,33 +109,27 @@
                 display: flex;
                 align-items: center;
                 /* الترتيب: الهمبرجر على اليسار، اللوجو على اليمين في نمط RTL */
-                justify-content: space-between; 
+                justify-content: space-between;
             }
 
-            /* إلغاء أي مسافات إضافية */
             .hamburger-btn {
                 margin-left: 0;
             }
             .logo {
                 margin-right: 0;
             }
-            
-            /* ✅ FIX 5: جعل كروت الملفات في عمود واحد */
+
             .files-grid {
                 grid-template-columns: 1fr;
                 padding: 0 15px;
                 gap: 20px;
             }
 
-            /* ضبط حجم العنوان */
             .page-header h1 {
                 font-size: 2.2rem !important;
             }
         }
 
-        /* ================================================= */
-        /* 2. تنسيقات الهواتف الصغيرة جداً (Small Phones < 425px) */
-        /* ================================================= */
         @media (max-width: 425px) {
             .navbar {
                 padding: 10px 5px !important;
@@ -153,13 +138,10 @@
                 font-size: 1.8rem !important;
             }
             .sidebar {
-                 width: 250px; 
+                 width: 250px;
             }
         }
-        
-        /* ================================================= */
-        /* 3. تنسيقات الشبكة الخاصة بمركز الملفات (الأساسية) */
-        /* ================================================= */
+
         .files-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -220,19 +202,19 @@
             background: #00cec9;
         }
     </style>
-    
+
 </head>
 
 <body style="background-color: #000; color: white;">
 
     <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
-    
+
     <div class="sidebar" id="sidebarMenu">
         <div class="sidebar-header" style="overflow: hidden; padding-bottom: 10px;">
             <h3 style="float: right; color: white; margin: 0;">الأقسام</h3>
             <button class="close-btn" onclick="toggleMenu()">&times;</button>
         </div>
-        
+
         <ul class="sidebar-list">
              <li><a href="{% url 'cart' %}"><i class="fa fa-shopping-cart"></i> السلة</a></li>
             {% if user.is_authenticated %}
@@ -241,7 +223,7 @@
                 <li><a href="{% url 'login' %}"><i class="fa fa-sign-in-alt"></i> دخول</a></li>
                 <li><a href="{% url 'profile' %}"><i class="fa fa-user-circle"></i> حسابي</a></li>
             {% endif %}
-            
+
             <li style="margin-top: 20px; border-top: 1px solid #333;">
                 <a href="{% url 'home' %}"><i class="fa fa-home"></i> الرئيسية</a>
             </li>
@@ -256,7 +238,7 @@
                 </a>
             </li>
         </ul>
-        
+
         <div class="search-bar-styled" style="padding: 20px 0;">
             <form action="{% url 'search' %}" method="GET" style="display: flex; gap: 5px;">
                 <input type="text" name="q" placeholder="بحث..." value="{{ request.GET.q }}" style="flex-grow: 1; padding: 10px; border-radius: 5px; border: 1px solid #333; background: #222; color: white;">
@@ -264,7 +246,7 @@
             </form>
         </div>
     </div>
-    
+
     <div class="top-bar-mhd">
         <div class="ticker-wrap">
             <div class="ticker">
@@ -276,9 +258,9 @@
     </div>
 
     <nav class="navbar" style="display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; background-color: #000;">
-        
+
         <div class="nav-right" style="display: flex; align-items: center; width: 100%;">
-            
+
             <div class="logo">
                 <a href="{% url 'home' %}">omar sat.<span class="neon-text">Store</span></a>
             </div>
@@ -287,7 +269,7 @@
                 <i class="fa fa-bars"></i>
             </button>
         </div>
-        
+
         <ul class="nav-links">
             <li><a href="{% url 'home' %}">الرئيسية</a></li>
             <li><a href="{% url 'store' %}">المتجر</a></li>
@@ -322,7 +304,7 @@
     <div class="files-grid">
         {% for file in channel_files %}
         <div class="file-card">
-            
+
             {% if file.image %}
             <img src="{{ file.image.url }}" alt="{{ file.title }}">
             {% endif %}
@@ -336,7 +318,7 @@
                     <i class="fa fa-clock"></i> تاريخ الإضافة: {{ file.date_added|date:"d/m/Y" }}
                 </p>
             </div>
-            
+
             <a href="{% url 'channel_file_details' file.id %}" class="file-link">
                 <i class="fa fa-download"></i> تفاصيل وتحميل
             </a>
@@ -353,7 +335,7 @@
         function toggleMenu() {
             const sidebar = document.getElementById('sidebarMenu');
             const overlay = document.getElementById('overlay');
-            
+
             if (sidebar && overlay) {
                 sidebar.classList.toggle('active');
                 overlay.classList.toggle('active');
