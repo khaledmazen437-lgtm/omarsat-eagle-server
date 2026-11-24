@@ -5,11 +5,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>طلباتي | Omar Sat</title>
-    
+
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;700;900&display=swap" rel="stylesheet">
-    
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body class="store-body">
@@ -20,16 +20,16 @@
                 Omar<span class="neon-text">Sat</span>
             </a>
         </div>
-        
+
     </nav>
 
     <div class="profile-container container">
-        
+
         <div class="profile-header-area">
             <h1><i class="fa fa-truck"></i> سجل <span class="neon-text">الطلبات</span></h1>
             <p style="color: #ccc; margin-top: 5px;">مرحباً {{ user.username }}، يمكنك متابعة حالة طلباتك من هنا.</p>
         </div>
-        
+
         {% if orders %}
         <div class="table-responsive"> <table class="order-table">
                 <thead>
@@ -92,21 +92,21 @@
                                     <img src="{% static 'images/no-image.png' %}" alt="No Image">
                                 {% endif %}
                             </div>
-                            
+
                             <div class="item-info">
                                 <a href="{% url 'product_details' item.product.id %}" class="item-link">
                                     {{ item.product.name }}
                                 </a>
                                 <p class="item-meta">العدد: {{ item.quantity }} | السعر: {{ item.product_price }} ج.م</p>
                             </div>
-                            
+
                             <a href="{% url 'product_details' item.product.id %}" class="btn-go-product">
                                 <i class="fa fa-external-link-alt"></i>
                             </a>
                         </div>
                         {% endfor %}
                     </div>
-                    
+
                     <hr style="border-color: #333;">
                     <div class="d-flex justify-content-between text-white fw-bold">
                         <span>الإجمالي الكلي:</span>

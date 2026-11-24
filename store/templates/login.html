@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;700;900&display=swap" rel="stylesheet">
-    
+
 </head>
 <body class="login-body">
 
@@ -20,7 +20,7 @@
         </div>
         </nav>
  <div class="floating-menu" id="floatMenu">
-    
+
     <a href="tel:01011058982" class="float-item phone">
         <span class="tooltip">اتصال</span> <i class="fa-solid fa-phone"></i>
     </a>
@@ -42,7 +42,7 @@
 </div>
     <div class="login-container">
         <div class="login-box">
-            
+
             {% if messages %}
                 {% for message in messages %}
                     <div style="background: #b30000; color: white; padding: 10px; border-radius: 5px; margin-bottom: 15px; text-align: center;">
@@ -52,22 +52,22 @@
             {% endif %}
 
             <h2>أهلاً بك يا كبير 👋</h2>
-            
+
             <form method="POST" action="">
     {% csrf_token %}
-    
+
     <input type="hidden" name="next" value="{{ request.GET.next }}">
-    
+
     <div class="input-group">
         <input type="text" name="username" placeholder="اسم المستخدم" required>
     </div>
     <div class="input-group">
         <input type="password" name="password" placeholder="كلمة المرور" required>
     </div>
-    
+
     <button type="submit" class="btn-login-submit">تسجيل الدخول</button>
-</form> 
-            
+</form>
+
             <div class="login-footer">
                 <p>ليس لديك حساب؟ <a href="{% url 'signup' %}">أنشئ حساب جديد</a></p>
             </div>
@@ -78,6 +78,6 @@
             document.getElementById('floatMenu').classList.toggle('active');
         }
     </script>
-    
+
 </body>
 </html>

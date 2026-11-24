@@ -5,34 +5,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>الرئيسية | Omar Sat</title>
-    
+
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;700;900&display=swap" rel="stylesheet">
-    
+
     <style>
-        /* ================================================= */
-        /* تنسيقات الفوتر والروابط الرئيسية         */
-        /* ================================================= */
 
         /* الحاوية الرئيسية للفوتر - زيادة المسافة الفاصلة (gap) */
         .footer-content {
             max-width: 1200px;
             margin: 0 auto;
-            display: flex !important; 
-            /* ✅ تم زيادة المسافة بين الأعمدة إلى 60px */
+            display: flex !important;
+
             justify-content: space-between;
-            gap: 60px; 
+            gap: 60px;
             align-items: flex-start;
         }
 
-        /* تنسيق عام لروابط الفوتر */
         .footer-links a {
-            color: #ddd; 
-            text-decoration: none; 
-            display: block; 
+            color: #ddd;
+            text-decoration: none;
+            display: block;
             padding: 5px 0;
             transition: color 0.2s;
         }
@@ -44,36 +40,34 @@
 
         /* تنسيق كتلة "من نحن" */
         .footer-about {
-            /* ✅ تعديل الحجم إلى 35% لإفساح المجال في المنتصف */
-            flex: 1 1 35%; 
-            order: 1; 
+
+            flex: 1 1 35%;
+            order: 1;
         }
 
         /* تجميع الروابط (روابط سريعة ومعلومات) */
         .footer-links-group {
-            /* ✅ FIX: زيادة مسافة الهامش اليسار لدفعه بعيداً عن السوشيال ميديا */
-            margin-left: 30px; 
-            
-            /* ✅ تعديل الحجم إلى 35% لإفساح المجال في المنتصف */
-            flex: 1 1 35%; 
+
+            margin-left: 30px;
+
+            flex: 1 1 35%;
             display: flex;
             justify-content: space-between;
             padding-left: 20px;
-            order: 2; 
+            order: 2;
         }
 
-        /* ✅ 1. وضع أيقونات السوشيال ميديا في أقصى اليسار (عمودياً) */
         .social-links-container {
-            flex: 0 1 auto; 
-            order: 3; 
+            flex: 0 1 auto;
+            order: 3;
             display: flex;
-            flex-direction: column; 
-            align-items: flex-start; 
-            padding-left: 20px; 
+            flex-direction: column;
+            align-items: flex-start;
+            padding-left: 20px;
         }
 
         .social-title {
-            color: #fff; 
+            color: #fff;
             margin-bottom: 10px;
             border-bottom: 1px solid #333;
             padding-bottom: 5px;
@@ -84,27 +78,26 @@
         /* نجعل الأيقونات تظهر تحت بعض */
         .social-icons-row {
             display: flex;
-            flex-direction: column; 
-            align-items: flex-start; 
-            gap: 5px; 
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 5px;
         }
-        
+
         .social-icons-row a {
             display: flex;
             align-items: center;
             gap: 10px;
-            font-size: 1.2rem; 
+            font-size: 1.2rem;
             padding: 3px 0;
         }
 
         .social-icons-row .fa-whatsapp {
-            color: #25D366; 
+            color: #25D366;
         }
 
-        /* ✅ 2. إبراز توقيع MHD */
         .mhd-signature {
             font-size: 0.95rem !important;
-            color: #fff !important; 
+            color: #fff !important;
             margin-top: 10px;
             padding-top: 5px;
             border-top: 1px dashed #333;
@@ -113,31 +106,28 @@
             display: block;
         }
         .mhd-signature .neon-text {
-            color: #00d2d3 !important; 
+            color: #00d2d3 !important;
             font-weight: bold;
         }
 
-
-        /* ================================================= */
         /* استجابة التصميم على الموبايل (Mobile Fixes)       */
-        /* ================================================= */
 
         @media (max-width: 768px) {
-            
+
             /* تحويل الفوتر من جزأين (يمين ويسار) إلى عمود واحد */
             .footer-content {
                 flex-direction: column;
                 gap: 30px !important;
             }
-            
+
             /* تجميع أعمدة الروابط (روابط سريعة وخدمات) عمودياً */
             .footer-links-group {
                 flex-direction: column;
                 gap: 30px;
-                padding-left: 0 !important; 
+                padding-left: 0 !important;
                 margin-left: 0 !important; /* إلغاء الهامش الإضافي على الموبايل */
             }
-            
+
             /* إعادة ترتيب العناصر لـ Mobile: الأيقونات في الوسط */
             .footer-links-group, .social-links-container {
                 padding-left: 0 !important;
@@ -145,7 +135,7 @@
             }
             .social-links-container {
                 order: 3;
-                align-items: center; /* توسيط الأيقونات في الموبايل */
+                align-items: center;
                 text-align: center;
             }
             .social-title {
@@ -159,7 +149,7 @@
             .footer-links-group {
                 order: 2;
             }
-            
+
              .mhd-signature {
                 text-align: center;
                 margin-top: 20px;
@@ -184,7 +174,7 @@
 
     <header class="main-header">
         <div class="container header-flex">
-            
+
             <div class="logo-area">
                 <a href="{% url 'home' %}">
                     <h1>Omar<span class="neon-text">Sat</span></h1>
@@ -203,14 +193,14 @@
 
     {% if user.is_authenticated %}
         <a href="{% url 'profile' %}" class="user-link">أهلاً, {{ user.username }}</a>
-        
+
         <a href="{% url 'logout' %}" class="btn-logout" title="تسجيل الخروج">
             <i class="fa fa-sign-out"></i>
         </a>
     {% else %}
         <a href="{% url 'login' %}" class="btn-login">دخول</a>
     {% endif %}
-    
+
     <a href="{% url 'cart' %}" class="cart-btn">
         <i class="fa fa-shopping-cart"></i>
         <span class="badge">0</span>
@@ -221,7 +211,7 @@
 
     <nav class="main-nav">
     <div class="container nav-flex">
-        
+
         <ul class="nav-list" id="main-nav-links">
             <li><a href="{% url 'home' %}" class="active">الرئيسية</a></li>
             <li><a href="{% url 'store' %}">المتجر</a></li>
@@ -231,12 +221,12 @@
             <li><a href="#about-section">من نحن</a></li>
             <li><a href="#contact-section">تواصل معنا</a></li>
         </ul>
-        
+
     </div>
 </nav>
 
     <main class="split-screen-container">
-        
+
         <div class="split left server-side">
             <div class="content">
                 <h2 class="typing-effect" data-text="server Eagle" >سيرفر ايجل</h2>
@@ -244,7 +234,6 @@
     <strong>سرعة خيالية، ثبات تام، وكل قنوات العالم</strong>
 </p>
 
-                
                 <a href="{% url 'server' %}" class="btn-cta server-btn">اشترك الآن</a>
             </div>
             <div class="overlay"></div>
@@ -262,9 +251,9 @@
         </div>
 
     </main>
-    
+
     <div class="floating-menu" id="floatMenu">
-    
+
     <a href="tel:01011058982" class="float-item phone">
         <span class="tooltip">اتصال</span> <i class="fa-solid fa-phone"></i>
     </a>
@@ -288,16 +277,16 @@
     <section id="about-section" class="about-pro">
     <div class="container">
         <div class="about-grid">
-            
+
             <div class="about-info">
                 <h4 class="sub-title">من نكون؟</h4>
                 <h2 class="main-title">Omar <span class="neon-text">Sat</span> Technology</h2>
                 <p class="description">
-                    نحن ليس مجرد متجر، بل نحن شريكك الأول في عالم التكنولوجيا الرقمية والستالايت. 
-                    بدأنا منذ سنوات بهدف واحد: تقديم <span class="highlight">أعلى جودة</span> 
+                    نحن ليس مجرد متجر، بل نحن شريكك الأول في عالم التكنولوجيا الرقمية والستالايت.
+                    بدأنا منذ سنوات بهدف واحد: تقديم <span class="highlight">أعلى جودة</span>
                     بأفضل سعر، مع دعم فني لا يتوقف.
                 </p>
-                
+
                 <div class="features-list">
                     <div class="feature-item">
                         <i class="fa-solid fa-medal"></i>
@@ -347,14 +336,14 @@
 
 <section id="contact-section" class="contact-pro">
     <div class="container">
-        
+
         <div class="section-header text-center">
             <h2 class="section-title">تواصل <span class="neon-text">معنا</span></h2>
             <p class="section-desc">نحن هنا لمساعدتك، لا تتردد في الاتصال بنا في أي وقت.</p>
         </div>
 
         <div class="contact-grid">
-            
+
             <a href="https://wa.me/+201011058982" target="_blank" class="contact-card whatsapp-card">
                 <div class="icon-box">
                     <i class="fa-brands fa-whatsapp"></i>
@@ -393,11 +382,10 @@
 
         </div>
 
-        
 </section>
 <footer style="background-color: #1a1a1a; color: #ddd; padding: 40px 20px; margin-top: 50px; border-top: 3px solid #00d2d3;">
-    <div class="footer-content container"> 
-        
+    <div class="footer-content container">
+
         <div class="footer-about">
             <h4 style="color: #00d2d3; margin-bottom: 15px;">Omar Sat.Store</h4>
             <p class="footer-description">
@@ -406,7 +394,7 @@
         </div>
 
         <div class="footer-links-group">
-            
+
             <div class="footer-links">
                 <h4 style="color: #fff; margin-bottom: 15px; border-bottom: 1px solid #333; padding-bottom: 5px;">روابط سريعة</h4>
                 <ul style="list-style: none; padding: 0;">
@@ -417,7 +405,7 @@
                     <li><a href="{% url 'wishlist' %}" style="color: #ddd;">المفضلة</a></li>
                 </ul>
             </div>
-            
+
             <div class="footer-links">
                 <h4 style="color: #fff; margin-bottom: 15px; border-bottom: 1px solid #333; padding-bottom: 5px;">معلومات وخدمات</h4>
                 <ul style="list-style: none; padding: 0;">
@@ -429,7 +417,7 @@
             </div>
 
         </div>
-        
+
         <div class="social-links-container">
             <h4 class="social-title">تابعنا:</h4>
             <div class="social-icons-row">
@@ -441,7 +429,7 @@
             </div>
         </div>
     </div>
-    
+
     <div class="mhd-signature-wrapper" style="border-top: 1px dashed #333; padding-top: 15px; margin-top: 15px;">
         <p class="mhd-signature">
             جميع الحقوق محفوظة &copy; 2025 لـ <b>Omar Sat</b> | صمم وطور بواسطة <span class="neon-text">MHD COMPANY (Mazen Khaled, Ahmed Shaban)</span>
@@ -451,12 +439,12 @@
 </footer>
 
     <script src="{% static 'js/script.js' %}"></script>
-    
+
     <script type="text/javascript">
         function googleTranslateElementInit() {
           new google.translate.TranslateElement({
-              pageLanguage: 'ar', 
-              includedLanguages: 'ar,en,tr,es,fr,de,ru,it', 
+              pageLanguage: 'ar',
+              includedLanguages: 'ar,en,tr,es,fr,de,ru,it',
               layout: google.translate.TranslateElement.InlineLayout.SIMPLE
           }, 'google_translate_element');
         }
@@ -467,6 +455,6 @@
             document.getElementById('floatMenu').classList.toggle('active');
         }
     </script>
-    
+
 </body>
 </html>

@@ -8,11 +8,11 @@
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;700;900&display=swap" rel="stylesheet">
-    
+
     <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
 
     <style>
-        /* تنسيق زرار الهامبرجر */
+
         .hamburger-btn {
             background: transparent;
             border: 2px solid rgba(255, 255, 255, 0.2);
@@ -32,7 +32,6 @@
             color: #00d2d3;
         }
 
-        /* تنسيق القائمة الجانبية */
         .sidebar {
             position: fixed;
             top: 0;
@@ -62,38 +61,30 @@
         .overlay.active {
             display: block;
         }
-        
-        /* تنسيق روابط القائمة */
+
         .sidebar-list { list-style: none; padding: 0; margin-top: 20px; }
         .sidebar-list li { margin-bottom: 10px; border-bottom: 1px solid #333; }
-        .sidebar-list a { 
-            color: #ddd; text-decoration: none; font-size: 18px; display: block; padding: 10px; 
+        .sidebar-list a {
+            color: #ddd; text-decoration: none; font-size: 18px; display: block; padding: 10px;
             display: flex; align-items: center; gap: 10px;
         }
         .sidebar-list a:hover { color: #00d2d3; padding-right: 15px; transition: 0.3s; }
         .close-btn { background: none; border: none; color: #ff4757; font-size: 28px; cursor: pointer; float: left; }
 
-        /* ================================================= */
-        /* 1. التنسيقات المشتركة (Tablet and Mobile)         */
-        /* ================================================= */
-
         @media (max-width: 768px) {
-            
-            /* 🛑 FIX 1: تعديل هيكل الـ Navbar بالكامل ليتناسب عمودياً 🛑 */
+
             .navbar {
                 flex-direction: column;
                 align-items: flex-start;
                 padding: 10px;
             }
 
-            /* تجميع اللوجو وزر الهمبرجر */
             .nav-right {
-                width: 100%; 
-                justify-content: space-between; 
+                width: 100%;
+                justify-content: space-between;
                 margin-bottom: 10px;
             }
-            
-            /* تجميع ايقونات البحث والدخول */
+
             .nav-icons {
                 width: 100%;
                 display: flex;
@@ -102,20 +93,17 @@
                 margin-bottom: 10px;
             }
 
-            /* إخفاء شريط التنقل الأفقي */
             .nav-links {
                 display: none !important;
             }
 
-            /* تنسيق شريط البحث */
             .search-bar-styled {
-                flex-grow: 1; 
+                flex-grow: 1;
                 margin-left: 10px;
             }
             .search-bar-styled input {
-                width: 100%; 
+                width: 100%;
             }
-
 
             /* باقي التعديلات الخاصة بالمنتجات والصفحات (محتفظ بها كما هي) */
 
@@ -128,32 +116,31 @@
             }
 
             .products-container {
-                display: flex; 
+                display: flex;
                 flex-direction: column;
                 align-items: center;
                 padding: 0 10px;
             }
 
             .product-card {
-                width: 95% !important; 
+                width: 95% !important;
                 margin: 15px auto !important;
                 padding: 10px !important;
-                flex-direction: column; 
+                flex-direction: column;
             }
 
             /* تم إزالة القسم القديم لملفات القنوات من المتجر */
             /* .channel-files-section > div {} */
-            
+
             .banner-slider-container {
-                height: 350px !important; 
+                height: 350px !important;
             }
         }
 
-        /* ================================================= */
         /* 2. التنسيقات الخاصة بالهواتف الصغيرة جداً (Small Phones < 425px) */
-        /* ================================================= */
+
         @media (max-width: 425px) {
-            
+
             /* تنسيق الـ Navbar لضمان عدم التداخل */
             .navbar {
                 padding: 10px 5px !important;
@@ -161,25 +148,23 @@
 
             /* تنسيق شريط البحث لتقليل حجمه */
             .search-bar-styled input {
-                width: 100%; 
+                width: 100%;
                 font-size: 0.8rem;
             }
 
-            /* تعديل حجم الخطوط لضمان المقروئية على الشاشات الصغيرة جداً */
             .page-header h1 {
                 font-size: 1.8rem !important;
             }
-            
-            /* ضبط ارتفاع البانر */
+
             .banner-slider-container {
-                height: 300px !important; 
+                height: 300px !important;
             }
 
             /* زرار التسوق العائم (جعله أصغر ومركزي) */
             .banner-cta-float {
-                right: 50% !important; 
+                right: 50% !important;
                 transform: translateX(50%) !important;
-                bottom: 15px; 
+                bottom: 15px;
                 padding: 8px 15px;
                 font-size: 0.9rem;
             }
@@ -190,14 +175,10 @@
                 font-size: 0.8rem;
             }
         }
-        
-        /* ================================================= */
-        /* 3. ستايل البانر العام (Swiper)                     */
-        /* ================================================= */
 
-        .banner-slider-container { 
+        .banner-slider-container {
             width: 100%;
-            height: 600px; 
+            height: 600px;
             overflow: hidden;
             position: relative;
             margin-bottom: 20px;
@@ -205,21 +186,20 @@
         .banner-item {
             width: 100%;
             height: 100%;
-            background-size: contain; 
-            background-repeat: no-repeat; 
-            background-position: center; 
-            display: flex; 
-            align-items: flex-end; 
-            justify-content: center; 
-            position: relative; 
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            position: relative;
         }
-        
-        /* ستايل زرار التسوق العائم */
+
         .banner-cta-float {
             position: absolute;
-            bottom: 50px; 
-            right: 50px; 
-            background: #00d2d3; 
+            bottom: 50px;
+            right: 50px;
+            background: #00d2d3;
             color: #000;
             padding: 15px 35px;
             font-weight: 900;
@@ -241,13 +221,13 @@
 <body class="store-body">
 
     <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
-    
+
     <div class="sidebar" id="sidebarMenu">
         <div class="sidebar-header" style="overflow: hidden; padding-bottom: 10px;">
             <h3 style="float: right; color: white; margin: 0;">الأقسام</h3>
             <button class="close-btn" onclick="toggleMenu()">&times;</button>
         </div>
-        
+
         <ul class="sidebar-list">
             <li><a href="{% url 'store' %}?category=receivers"><i class="fa fa-satellite-dish"></i> ريسيفرات</a></li>
             <li><a href="{% url 'store' %}?category=lnb"><i class="fa fa-crosshairs"></i> عدسات LNB</a></li>
@@ -262,7 +242,7 @@
                     <i class="fa fa-video"></i> شروحات وتطبيقات
                 </a>
             </li>
-            
+
             <li style="margin-top: 20px; border-top: 1px solid #333;">
                 <a href="{% url 'channel_files_center' %}" style="color: #00d2d3;" onclick="toggleMenu()">
                     <i class="fa fa-download"></i> مركز ملفات القنوات والسوفت وير
@@ -282,7 +262,7 @@
     </div>
 
     <nav class="navbar" style="display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; background-color: #000;">
-        
+
         <div class="nav-right" style="display: flex; align-items: center;">
             <button class="hamburger-btn" onclick="toggleMenu()">
                 <i class="fa fa-bars"></i>
@@ -292,12 +272,12 @@
                 <a href="{% url 'home' %}">omar sat.<span class="neon-text">Store</span></a>
             </div>
         </div>
-        
+
         <ul class="nav-links">
             <li><a href="{% url 'home' %}">الرئيسية</a></li>
             <li><a href="{% url 'store' %}" class="active">المتجر</a></li>
             <li><a href="{% url 'server' %}">السيرفر</a></li>
-            
+
             <li><a href="{% url 'discounts' %}" style="color: #ffc107; font-weight: bold;"><i class="fa fa-percent"></i> خصومات</a></li>
             <li><a href="{% url 'wishlist' %}" style="color: #ff4757;"><i class="fa fa-heart"></i> المفضلة</a></li>
         </ul>
@@ -318,18 +298,18 @@
             <a href="{% url 'cart' %}" class="cart-icon"><i class="fa fa-shopping-cart"></i></a>
         </div>
     </nav>
-    
+
     <div class="swiper-container banner-slider-container container">
         <div class="swiper-wrapper">
         {% for banner in banners %}
         <div class="swiper-slide banner-item" style="background-image: url('{{ banner.image.url }}');">
-            
+
             {% if banner.link %}
             <a href="{{ banner.link }}" class="banner-cta-float">
                 تسوق الآن <i class="fa fa-arrow-left"></i>
             </a>
             {% endif %}
-            
+
         </div>
         {% empty %}
         <div class="swiper-slide banner-item" style="background-color: #333;">
@@ -339,7 +319,7 @@
         </div>
         {% endfor %}
         </div>
-        
+
         <div class="swiper-pagination"></div>
         <div class="swiper-button-next" style="color: #00d2d3;"></div>
         <div class="swiper-button-prev" style="color: #00d2d3;"></div>
@@ -363,7 +343,7 @@
             </div>
             <div class="card-info">
                 <h3>{{ product.name }}</h3>
-                
+
                 {% if product.discount_price %}
                     <span class="price" style="text-decoration: line-through; color: #777; font-size: 0.9em;">{{ product.price }} ج.م</span>
                     <span class="price" style="color: #ffc107; font-size: 1.2em; font-weight: bold;">{{ product.discount_price }} ج.م</span>
@@ -395,7 +375,7 @@
         function toggleMenu() {
             const sidebar = document.getElementById('sidebarMenu');
             const overlay = document.getElementById('overlay');
-            
+
             if (sidebar && overlay) {
                 sidebar.classList.toggle('active');
                 overlay.classList.toggle('active');
@@ -404,18 +384,16 @@
             }
         }
 
-        // ❌ تم إزالة كود التحكم في ظهور قسم ملفات القنوات القديم بالهاش (#channel-files)
-
     </script>
 
     <script src="{% static 'js/script.js' %}" async></script>
-    
+
     <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
     <script>
         var swiper = new Swiper('.banner-slider-container', {
             loop: true,
             autoplay: {
-                delay: 4000, // 4 ثواني
+                delay: 4000,
                 disableOnInteraction: false,
             },
             pagination: {
